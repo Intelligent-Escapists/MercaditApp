@@ -9,10 +9,11 @@ GRANT ALL PRIVILEGES ON mercaditApp.* to 'lab'@'localhost' WITH GRANT OPTION;
 
 USE mercaditApp;
 
-DROP TABLE IF EXISTS carrito;
+DROP TABLE IF EXISTS tener;
 DROP TABLE IF EXISTS categoria;
 DROP TABLE IF EXISTS comentario;
 DROP TABLE IF EXISTS producto;
+DROP TABLE IF EXISTS carrito;
 DROP TABLE IF EXISTS rol;
 DROP TABLE IF EXISTS usuario;
 
@@ -64,11 +65,11 @@ CREATE TABLE producto(
     
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-DROP TABLE IF EXISTS tener;
+
 CREATE TABLE tener (
 	id_usuario INT, 
     id_carrito INT,
-	FOREIGN KEY(id_usuario) REFERENCES usuario(id_uduario) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY(id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(id_carrito) REFERENCES carrito(id_carrito) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
@@ -79,7 +80,7 @@ CREATE TABLE comentario (
 	id_producto INT,
     id_usuario INT,
     comentario TEXT NOT NULL,
-    PRIMARY KEY(id_comentario,id_produccto),
+    PRIMARY KEY(id_comentario,id_producto),
     FOREIGN KEY(id_producto) REFERENCES producto(id_producto) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
     
