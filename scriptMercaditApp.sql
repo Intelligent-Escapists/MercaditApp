@@ -24,6 +24,7 @@ CREATE TABLE usuario (
     password VARCHAR(64) NOT NULL,
     correo VARCHAR(345) NOT NULL,
     telefono VARCHAR(13) NOT NULL,
+    email_confirmado BOOL DEFAULT FALSE,
     PRIMARY KEY(id_usuario),
     UNIQUE KEY(correo),
     UNIQUE KEY(nombre_usuario)
