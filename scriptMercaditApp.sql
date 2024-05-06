@@ -21,9 +21,11 @@ DROP TABLE IF EXISTS usuario;
 CREATE TABLE usuario (
 	id_usuario INT NOT NULL AUTO_INCREMENT,
     nombre_usuario VARCHAR(50) NOT NULL,
-    password VARCHAR(64) NOT NULL,
     correo VARCHAR(345) NOT NULL,
+    password VARCHAR(64) NOT NULL,
     telefono VARCHAR(13) NOT NULL,
+    email_confirmado BOOL DEFAULT FALSE,
+    esVendedor BOOL DEFAULT FALSE,
     PRIMARY KEY(id_usuario),
     UNIQUE KEY(correo),
     UNIQUE KEY(nombre_usuario)
