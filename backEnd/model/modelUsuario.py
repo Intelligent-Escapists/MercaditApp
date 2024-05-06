@@ -6,8 +6,13 @@ from alchemyClasses.Usuario import Usuario
 from alchemyClasses import db
 
 
-def crear_usuario(nombre_usuario,correo,password, telefono):
-    nuevo_usuario = Usuario(nombre_usuario=nombre_usuario ,correo=correo, password=password, telefono=telefono)
+def crear_usuario(nombre_usuario, correo, password, telefono):
+    nuevo_usuario = Usuario(
+        nombre_usuario=nombre_usuario,
+        correo=correo,
+        password=password,
+        telefono=telefono,
+    )
 
     try:
         db.session.add(nuevo_usuario)
@@ -17,12 +22,13 @@ def crear_usuario(nombre_usuario,correo,password, telefono):
 
     return nuevo_usuario
 
+
 def confirmar_email(usuario):
     usuario.email_confirmado = True
     try:
         db.session.commit()
     except Exception as e:
-        abort(400, str(e)) 
+        abort(400, str(e))
     return "200"
 
 
@@ -39,15 +45,20 @@ def validar_usuario(correo, password):
         return usuario
 
     return None
+
+
 def buscar_usuario_por_id(id_usuario):
     return Usuario.query.filter_by(id_usuario=id_usuario).first()
+
 
 def buscar_usuario_por_correo(correo):
     return Usuario.query.filter_by(correo=correo).first()
 
+
 def existe_usuario_correo(correo):
 
     return Usuario.query.filter_by(correo=correo).first() is not None
+
 
 def existe_usuario_nomre_usuario(nombre_usuario):
     return Usuario.query.filter_by(nombre_usuario=nombre_usuario).first() is not None
