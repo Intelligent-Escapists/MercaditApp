@@ -9,9 +9,12 @@ class Usuario(db.Model):
     password = Column(String(200), nullable=False)
     telefono = Column(String(13), nullable=False)
     email_confirmado = Column(Boolean, default=False)
+    esVendedor = Column(Boolean, default=False)
 
-    def __init__(self,nombre_usuario, correo, password,telefono):
+    def __init__(self,nombre_usuario, correo, password,telefono,email_confirmado=False,esVendedor=False):
         self.nombre_usuario = nombre_usuario
         self.correo = correo
         self.password = password
         self.telefono = telefono
+        self.email_confirmado = email_confirmado
+        self.esVendedor = esVendedor
