@@ -13,7 +13,7 @@ def crear_comentario():
     comentario = request.json['comentario']
 
     if (id_producto is None or id_usuario is None or comentario is None):
-        return jsonify({"error": "Datos faltantes para crear el comentario"}), 400
+        return jsonify({"error 1": "Datos faltantes para crear el comentario"}), 400
     
     try:    
         nuevo_comentario = model.crear_comentario(id_producto, id_usuario, comentario)
@@ -24,7 +24,7 @@ def crear_comentario():
             'comentario': nuevo_comentario.comentario   
         }), 201
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error 2": str(e)}), 400
     
 @comentario_blueprint.route('/ver-comentarios', methods=['GET'])
 def ver_comentarios():
@@ -50,6 +50,8 @@ def ver_comentario(id_comentario):
         'comentario': comentario.comentario
     }), 200
 
+
+#no lo probare para este caso de uso. Mario
 @comentario_blueprint.route('/actualizar/<int:id_comentario>', methods=['PUT'])
 def actualizar_comentario(id_comentario):
     nuevo_texto = request.json.get('comentario')
@@ -66,7 +68,8 @@ def actualizar_comentario(id_comentario):
             }), 200
         else:
             return jsonify({'error': 'Comentario no encontrado'}), 404
-        
+
+#no lo probare para este caso de uso. Mario
 @comentario_blueprint.route('/eliminar/<int:id_comentario>', methods=['DELETE'])    
 def eliminar_comentario(id_comentario):
     comentario = model.eliminar_comentario(id_comentario)
