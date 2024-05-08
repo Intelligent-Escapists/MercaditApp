@@ -8,8 +8,8 @@ class Calificacion(db.Model):
     id_usuario = Column(Integer, ForeignKey("usuario.id_usuario"), primary_key=True)
     calificacion = Column(SmallInteger, nullable=False, primary_key=True)
 
-    __table_args__ = CheckConstraint(
-        "calificacion BETWEEN 0 AND 10", name="calificacion_check"
+    __table_args__ = (
+        CheckConstraint("calificacion BETWEEN 0 AND 10", name="calificacion_check"),
     )
 
     def __init__(self, id_producto, id_usuario, calificacion):
