@@ -71,7 +71,7 @@ CREATE TABLE calificacion(
 	id_producto INT,
     id_usuario INT,
     calificacion TINYINT CHECK(calificacion BETWEEN 0 AND 10),
-	PRIMARY KEY(id_producto,id_usuario,calificacion),
+	PRIMARY KEY(id_producto,id_usuario),
 	FOREIGN KEY(id_producto) REFERENCES producto(id_producto) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
