@@ -16,7 +16,7 @@ class Producto(db.Model):
     __tablename__ = "producto"
     id_producto = Column(Integer, primary_key=True)
     id_usuario = Column(Integer, ForeignKey("usuario.id_usuario"))
-    id_carrito = Column(Integer, ForeignKey("carrito.id_carrito"))
+    id_carrito = Column(Integer, ForeignKey("carrito.id_carrito"), nullable=True)
     nombre = Column(String(100), nullable=False)
     descripcion = Column(Text, nullable=False)
     foto = Column(Text, nullable=False)
