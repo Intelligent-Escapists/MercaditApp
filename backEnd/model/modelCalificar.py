@@ -61,7 +61,7 @@ def actualizar_calificacion_general(id_producto):
             producto.calificacion = nueva_calificacion_general
             db.session.commit()
         except Exception as e:
-            print(f"Error XDXDXD: {e}")
+            print(f"Error: {e}")
             abort(400, str(e))
         # Guardar los cambios en la base de datos
 
