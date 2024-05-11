@@ -25,14 +25,14 @@ class Producto(db.Model):
     def __init__(
         self,
         id_usuario,
-        id_carrito,
         nombre,
         descripcion,
         foto,
         no_stock,
         precio,
         calificacion,
-        id_compra,
+        id_compra=None,
+        id_carrito=None,
     ):
         self.id_usuario = id_usuario
         self.id_carrito = id_carrito

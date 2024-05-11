@@ -11,9 +11,7 @@ class Usuario(db.Model):
     telefono = Column(String(13), nullable=False)
     email_confirmado = Column(Boolean, default=False)
 
-    def __init__(
-        self, nombre_usuario, correo, password, telefono, email_confirmado=False
-    ):
+    def __init__(self, nombre_usuario, correo, password, telefono, email_confirmado=False):
         self.nombre_usuario = nombre_usuario
         self.correo = correo
         self.password = password

@@ -10,6 +10,6 @@ class Rol(db.Model):
         CheckConstraint('id_rol IN (0, 1)', name='id_rol_check'),
     )
     
-    def __init__(self, id_rol,id_usuario):
+    def __init__(self, id_usuario,id_rol):
         self.id_rol = id_rol
         self.id_usuario = id_usuario 
