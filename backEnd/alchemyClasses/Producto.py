@@ -1,14 +1,5 @@
-from sqlalchemy import (
-    Column,
-    CheckConstraint,
-    Integer,
-    String,
-    ForeignKey,
-    Text,
-    SmallInteger,
-)
-from sqlalchemy.types import DECIMAL  # Cambio aquí
-
+from sqlalchemy import Column,CheckConstraint, Integer, String, ForeignKey, Text, SmallInteger
+from sqlalchemy.types import DECIMAL
 from alchemyClasses import db
 
 
@@ -21,7 +12,7 @@ class Producto(db.Model):
     descripcion = Column(Text, nullable=False)
     foto = Column(Text, nullable=False)
     no_stock = Column(Integer, nullable=False)
-    precio = Column(DECIMAL, nullable=False)  # Cambio aquí
+    precio = Column(DECIMAL, nullable=False)
     calificacion = Column(SmallInteger, nullable=False)
     id_compra = Column(Integer)
 

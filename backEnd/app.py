@@ -3,10 +3,14 @@ from flask_cors import CORS
 from config import Applicationconfig
 from alchemyClasses import db
 from alchemyClasses.Usuario import Usuario
+from alchemyClasses.Comentario import Comentario
+from alchemyClasses.Producto import Producto
+from alchemyClasses.Carrito import Carrito
 from flask_mail import Mail
 
 from controllers.usuarioController import usuario_blueprint
 from controllers.productoController import producto_blueprint
+from controllers.comentarioController import comentario_blueprint
 
 app = Flask(__name__)
 app.config.from_object(Applicationconfig)
@@ -21,6 +25,8 @@ def return_mail():
 
 app.register_blueprint(usuario_blueprint)
 app.register_blueprint(producto_blueprint)
+app.register_blueprint(comentario_blueprint)
+
 
 
 if __name__ == "__main__":
