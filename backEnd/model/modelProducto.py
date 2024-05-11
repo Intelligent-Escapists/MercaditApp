@@ -3,10 +3,10 @@ from flask.json import jsonify
 from cryptoUtils import CryptoUtils as crypto
 
 from alchemyClasses.Producto import Producto
-from alchemyClasses import 
+from alchemyClasses import db
 
 def agregar_producto(id_usuario, nombre, descripcion, foto, no_stock, precio,calificacion=0):
-      nuevo_producto = Producto(
+    nuevo_producto = Producto(
         id_usuario=id_usuario,
         nombre=nombre,
         descripcion=descripcion,
