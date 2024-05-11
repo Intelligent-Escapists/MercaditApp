@@ -37,3 +37,4 @@ def crear_producto(id_usuario, id_carrito, nombre, descripcion, foto, no_stock, 
     except Exception as e:
         db.session.rollback()
         raise Exception(f"Error al crear el producto: {str(e)}")
+
