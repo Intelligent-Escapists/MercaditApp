@@ -3,10 +3,10 @@ from flask.json import jsonify
 from cryptoUtils import CryptoUtils as crypto
 
 from alchemyClasses.Producto import Producto
-from alchemyClasses import db
+from alchemyClasses import 
 
 def agregar_producto(id_usuario, nombre, descripcion, foto, no_stock, precio,calificacion=0):
-    nuevo_producto = Producto(
+      nuevo_producto = Producto(
         id_usuario=id_usuario,
         nombre=nombre,
         descripcion=descripcion,
@@ -21,6 +21,18 @@ def agregar_producto(id_usuario, nombre, descripcion, foto, no_stock, precio,cal
     except Exception as e:
         abort(400, str(e))
     return nuevo_producto
+
+def consultar_producto_por_id(id_producto):
+    producto = Producto.query.filter_by(id_producto=id_producto).first()
+    if producto is None:
+        abort(404, description="Producto no encontrado")
+    return producto
+
+def consultar_productos():
+    productos = Producto.query.all()
+    if productos is None:
+        abort(404, description="No hay productos")
+    return productos
 
 def eliminar_producto(id_producto):
     producto = existe_producto__por_id(id_producto)
@@ -43,4 +55,3 @@ def existe_producto(id_usuario,nombre_producto):
     
 def existe_producto__por_id(id_producto):
     return Producto.query.filter(Producto.id_producto == id_producto).first()
-    
