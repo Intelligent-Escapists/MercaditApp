@@ -248,6 +248,7 @@ def actualiza_producto():
                 "foto": producto_actualizado.foto,
                 "no_stock": producto_actualizado.no_stock,
                 "precio": producto_actualizado.precio,
+                "categoria": "Categoria",
             }
         )
     else:
