@@ -5,7 +5,10 @@ from cryptoUtils import CryptoUtils as crypto
 from alchemyClasses.Producto import Producto
 from alchemyClasses import db
 
-def agregar_producto(id_usuario, nombre, descripcion, foto, no_stock, precio,calificacion=0):
+
+def agregar_producto(
+    id_usuario, nombre, descripcion, foto, no_stock, precio, calificacion=0
+):
     nuevo_producto = Producto(
         id_usuario=id_usuario,
         nombre=nombre,
@@ -13,7 +16,7 @@ def agregar_producto(id_usuario, nombre, descripcion, foto, no_stock, precio,cal
         foto=foto,
         no_stock=no_stock,
         precio=precio,
-        calificacion=calificacion
+        calificacion=calificacion,
     )
     try:
         db.session.add(nuevo_producto)
@@ -22,17 +25,20 @@ def agregar_producto(id_usuario, nombre, descripcion, foto, no_stock, precio,cal
         abort(400, str(e))
     return nuevo_producto
 
+
 def consultar_producto_por_id(id_producto):
     producto = Producto.query.filter_by(id_producto=id_producto).first()
     if producto is None:
         abort(404, description="Producto no encontrado")
     return producto
 
+
 def consultar_productos():
     productos = Producto.query.all()
     if productos is None:
         abort(404, description="No hay productos")
     return productos
+
 
 def eliminar_producto(id_producto):
     producto = existe_producto__por_id(id_producto)
@@ -44,14 +50,37 @@ def eliminar_producto(id_producto):
         return False
 
 
-
-
-def existe_producto(id_usuario,nombre_producto):
-    producto = Producto.query.filter(Producto.id_usuario == id_usuario).filter(Producto.nombre == nombre_producto).first()
+def existe_producto(id_usuario, nombre_producto):
+    producto = (
+        Producto.query.filter(Producto.id_usuario == id_usuario)
+        .filter(Producto.nombre == nombre_producto)
+        .first()
+    )
     if producto:
         return True
     else:
         return False
-    
+
+
 def existe_producto__por_id(id_producto):
     return Producto.query.filter(Producto.id_producto == id_producto).first()
+
+
+def actualizar_producto(id_producto, nombre, descripcion, foto, no_stock, precio):
+    producto = producto_existe(id_producto=id_producto)
+
+    try:
+        producto.nombre = nombre
+        producto.descripcion = descripcion
+        producto.foto = foto
+        producto.no_stock = no_stock
+        producto.precio = precio
+        db.session.commit()
+        return producto_existe(id_producto=id_producto)
+    except Exception as e:
+        print(f"Error: {e}")
+        abort(400, str(e))
+
+
+def producto_existe(id_producto):
+    return Producto.query.filter_by(id_producto=id_producto).first()
