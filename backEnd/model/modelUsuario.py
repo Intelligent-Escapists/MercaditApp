@@ -6,6 +6,9 @@ from alchemyClasses.Usuario import Usuario
 from alchemyClasses import db
 
 
+def obtener_usaurios():
+    return Usuario.query.all()
+
 def crear_usuario(nombre_usuario, correo, password, telefono):
     nuevo_usuario = Usuario(
         nombre_usuario=nombre_usuario,
@@ -48,7 +51,7 @@ def validar_usuario(correo, password):
 
 
 def buscar_usuario_por_id(id_usuario):
-    return Usuario.query.filter_by(id_usuario=id_usuario).first()
+    return Usuario.query.filter_by(id_usuario=id_usuario).first() is not None
 
 
 def buscar_usuario_por_correo(correo):
