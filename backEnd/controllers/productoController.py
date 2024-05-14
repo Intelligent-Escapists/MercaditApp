@@ -143,7 +143,7 @@ def agregar_producto():
     nuevo_producto = modelProducto.agregar_producto(
         id_usuario, nombre, descripcion, foto, cantidad, precio
     )
-    nueva_categoria = modelCategoria.crear_categoria(
+    nueva_categoria = modelCategoria.agregar_categoria_a_producto(
         nuevo_producto.id_producto, categoria
     )
 
@@ -230,6 +230,7 @@ def actualiza_producto():
     foto = request.json["foto"]
     no_stock = request.json["no_stock"]
     precio = request.json["precio"]
+    categorias = request.json.get("categorias", [])
 
     if modelProducto.producto_existe(id_producto=id_producto):
         producto_actualizado = modelProducto.actualizar_producto(
@@ -239,8 +240,12 @@ def actualiza_producto():
             foto=foto,
             no_stock=no_stock,
             precio=precio,
+            categorias=categorias,
         )
 
+        categorias_actualizadas = modelCategoria.obtener_categorias_de_producto(
+            id_producto=id_producto
+        )
         return jsonify(
             {
                 "nombre": producto_actualizado.nombre,
@@ -248,8 +253,40 @@ def actualiza_producto():
                 "foto": producto_actualizado.foto,
                 "no_stock": producto_actualizado.no_stock,
                 "precio": producto_actualizado.precio,
-                "categoria": "Categorias",
+                "categoria": categorias_actualizadas,
             }
         )
     else:
         return jsonify({"error": "No existe el producto"})
+
+
+@producto_blueprint.route("/obtener-categorias-de-un-producto", methods=["GET"])
+def obten_categorias():
+    id_producto = request.json["id_producto"]
+    categorias = modelCategoria.obtener_categorias_de_producto(id_producto=id_producto)
+    return jsonify({"categorias": categorias})
+
+
+@producto_blueprint.route("obtener-todas-las-categorias-existentes", methods=["GET"])
+def obten_todas_las_categorias():
+    categorias = modelCategoria.obtener_todas_las_categorias()
+    return jsonify({"categorias": categorias})
+
+
+def obtenProducto(id_producto):
+    return modelProducto.producto_existe(id_producto=id_producto)
+
+
+def elimina_categorias_de_producto(id_producto):
+    print("Estoy eliminando")
+    return modelCategoria.eliminar_todas_las_categorias_de_un_producto(id_producto)
+
+
+def agregar_categoria(id_producto, categoria):
+    return modelCategoria.agregar_categoria_a_producto(
+        id_producto=id_producto, categoria=categoria
+    )
+
+
+def obtener_categorias_de_producto(id_producto):
+    return modelCategoria.obtener_categorias_de_producto(id_producto=id_producto)
