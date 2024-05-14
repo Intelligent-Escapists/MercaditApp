@@ -14,7 +14,6 @@ import math
 def calificar_producto(id_producto, id_usuario, nueva_calificacion):
     if existe_producto_y_usuario(id_producto=id_producto, id_usuario=id_usuario):
         calificacion = existe_calificacion(id_producto, id_usuario)
-        print("calificacion XDXXD", calificacion)
         if calificacion:  # Si existe se actualiza
             try:
                 calificacion.calificacion = nueva_calificacion
@@ -36,8 +35,9 @@ def calificar_producto(id_producto, id_usuario, nueva_calificacion):
             except Exception as e:
                 abort(400, str(e))
             actualizar_calificacion_general(id_producto=id_producto)
+            return nueva_calificacion.calificacion
     else:
-        return -1
+        return "No existe producto"
 
 
 # Actualiza la calificacion de un producto en general
