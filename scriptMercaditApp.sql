@@ -1,3 +1,4 @@
+
 -- Descomentar la linea si no se ha creado la base de datos
 -- CREATE DATABASE mercaditApp;
 
@@ -16,6 +17,7 @@ DROP TABLE IF EXISTS carrito;
 DROP TABLE IF EXISTS rol;
 DROP TABLE IF EXISTS usuario;
 DROP TABLE IF EXISTS calificacion;
+DROP TABLE IF EXISTS categorias_predefinidas;
 
 
 CREATE TABLE usuario (
@@ -25,6 +27,7 @@ CREATE TABLE usuario (
     password VARCHAR(64) NOT NULL,
     telefono VARCHAR(13) NOT NULL,
     email_confirmado BOOL DEFAULT FALSE,
+    esVendedor BOOL DEFAULT FALSE,
     PRIMARY KEY(id_usuario),
     UNIQUE KEY(correo),
     UNIQUE KEY(nombre_usuario)
@@ -97,9 +100,91 @@ CREATE TABLE comentario (
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; 
 
 
-CREATE TABLE categoria(
-	id_producto INT,
+CREATE TABLE categoria (
+    id_producto INT,
     categoria VARCHAR(50),
-    PRIMARY KEY(id_producto,categoria),
-    FOREIGN KEY (id_producto) REFERENCES producto(id_producto) ON DELETE CASCADE ON UPDATE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    PRIMARY KEY (id_producto, categoria),
+    FOREIGN KEY (id_producto) REFERENCES producto (id_producto) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_categoria
+    FOREIGN KEY (categoria)
+    REFERENCES categorias_predefinidas (nombre_categoria)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE categorias_predefinidas (
+    categoria_id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_categoria VARCHAR(50),
+    INDEX idx_nombre_categoria (nombre_categoria)
+);
+
+select * from categorias_predefinidas;
+
+INSERT INTO categorias_predefinidas (nombre_categoria) VALUES
+('Ropa y Accesorios'),
+('Electrónica'),
+('Hogar y Jardín'),
+('Belleza y Cuidado Personal'),
+('Deportes y Aire Libre'),
+('Libros y Medios'),
+('Juguetes y Juegos'),
+('Alimentos y Bebidas'),
+('Salud y Bienestar'),
+('Automóviles y Motocicletas');
+
+
+use mercaditApp;
+
+-- Insertar usuarios de ejemplo
+INSERT INTO usuario (nombre_usuario, correo, password, telefono, email_confirmado, esVendedor) 
+VALUES 
+('usuario1', 'usuario1@example.com', 'contraseña123', '123456789', TRUE, FALSE),
+('usuario2', 'usuario2@example.com', 'contraseña456', '987654321', TRUE, TRUE);
+
+-- Insertar roles de ejemplo
+INSERT INTO rol (id_usuario, id_rol) 
+VALUES 
+(1, 0),
+(2, 1);
+
+-- Insertar productos de ejemplo
+INSERT INTO producto (id_usuario, nombre, descripcion, foto, no_stock, precio, calificacion) 
+VALUES 
+(1, 'Producto 1', 'Descripción del Producto 1', 'imagen1.jpg', 10, 25.99, 8),
+(1, 'Producto 2', 'Descripción del Producto 2', 'imagen2.jpg', 5, 15.99, 7),
+(2, 'Producto 3', 'Descripción del Producto 3', 'imagen3.jpg', 20, 10.50, 9);
+
+-- Insertar calificaciones de ejemplo
+INSERT INTO calificacion (id_producto, id_usuario, calificacion) 
+VALUES 
+(1, 2, 9),
+(2, 2, 8),
+(3, 1, 10);
+
+-- Insertar comentarios de ejemplo
+INSERT INTO comentario (id_producto, id_usuario, comentario) 
+VALUES 
+(1, 2, '¡Excelente producto!'),
+(2, 1, 'Buen producto, pero podría mejorar en X aspecto.');
+
+-- Insertar categorías de ejemplo
+INSERT INTO categoria (id_producto, categoria) 
+VALUES 
+(1, 'Ropa y Accesorios'),
+(1, 'Electrónica'),
+(2, 'Alimentos y Bebidas'),
+(3, 'Salud y Bienestar');
+
+select * from producto where id_producto = 1;
+select * from calificacion where id_producto =1;
+
+select * from usuario;
+UPDATE producto
+SET calificacion = null
+WHERE id_producto = 1;
+
+select * from categoria where id_producto = 1;
+
+INSERT INTO calificacion (id_producto, id_usuario, calificacion) VALUES (1,3,8);
+DELETE FROM calificacion where calificacion = 9 and id_usuario = 2
+

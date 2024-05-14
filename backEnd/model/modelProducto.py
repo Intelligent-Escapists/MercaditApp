@@ -4,6 +4,7 @@ from cryptoUtils import CryptoUtils as crypto
 
 from alchemyClasses.Producto import Producto
 from alchemyClasses import db
+from controllers import productoController
 
 
 def agregar_producto(
@@ -62,24 +63,47 @@ def existe_producto(id_usuario, nombre_producto):
         return False
 
 
-def existe_producto__por_id(id_producto):
-    return Producto.query.filter(Producto.id_producto == id_producto).first()
-
-
-def actualizar_producto(id_producto, nombre, descripcion, foto, no_stock, precio):
+def actualizar_producto(
+    id_producto, nombre, descripcion, foto, no_stock, precio, categorias
+):
     producto = producto_existe(id_producto=id_producto)
+    if producto:
+        try:
+            producto.nombre = nombre
+            producto.descripcion = descripcion
+            producto.foto = foto
+            producto.no_stock = no_stock
+            producto.precio = precio
+            actualizar_categorias(id_producto=id_producto, categorias=categorias)
+            db.session.commit()
+            return producto_existe(id_producto=id_producto)
+        except Exception as e:
+            print(f"Error: {e}")
+            abort(400, str(e))
+    else:
+        return "no existe producto"
 
-    try:
-        producto.nombre = nombre
-        producto.descripcion = descripcion
-        producto.foto = foto
-        producto.no_stock = no_stock
-        producto.precio = precio
-        db.session.commit()
-        return producto_existe(id_producto=id_producto)
-    except Exception as e:
-        print(f"Error: {e}")
-        abort(400, str(e))
+
+def actualizar_categorias(id_producto, categorias):
+    producto = producto_existe(
+        id_producto=id_producto
+    )  # Verificamos si existe el producto
+    categorias_eliminadas = productoController.elimina_categorias_de_producto(
+        id_producto=id_producto
+    )  # Verificamos si se pueden eliminar
+    if producto and categorias_eliminadas:
+        try:
+            for nombre_categoria in categorias:
+                resultado = productoController.agregar_categoria(
+                    id_producto, nombre_categoria
+                )
+                if resultado:  # Verificar si hay un mensaje de error
+                    return resultado
+        except Exception as e:
+            print(f"Error: {e}")
+            abort(400, str(e))
+    else:
+        return productoController.obtener_categorias_de_producto(id_producto)
 
 
 def producto_existe(id_producto):
