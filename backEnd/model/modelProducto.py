@@ -28,35 +28,51 @@ def agregar_producto(
 
 
 def consultar_producto_por_id(id_producto):
-    producto = Producto.query.filter_by(id_producto=id_producto).first()
+    try:
+        producto = Producto.query.filter_by(id_producto=id_producto).first()
+    except Exception as e:
+        print(f"Error: {e}")
+        abort(400, str(e))
     if producto is None:
         abort(404, description="Producto no encontrado")
     return producto
 
 
 def consultar_productos():
-    productos = Producto.query.all()
+    try:
+        productos = Producto.query.all()
+    except Exception as e:
+        print(f"Error: {e}")
+        abort(400, str(e))
     if productos is None:
         abort(404, description="No hay productos")
     return productos
 
 
 def eliminar_producto(id_producto):
-    producto = existe_producto__por_id(id_producto)
+    producto = producto_existe(id_producto)
     if producto is not None:
-        db.session.delete(producto)
-        db.session.commit()
-        return True
+        try:
+            db.session.delete(producto)
+            db.session.commit()
+            return True
+        except Exception as e:
+            print(f"Error: {e}")
+            abort(400, str(e))
     else:
         return False
 
 
 def existe_producto(id_usuario, nombre_producto):
-    producto = (
-        Producto.query.filter(Producto.id_usuario == id_usuario)
-        .filter(Producto.nombre == nombre_producto)
-        .first()
-    )
+    try:
+        producto = (
+            Producto.query.filter(Producto.id_usuario == id_usuario)
+            .filter(Producto.nombre == nombre_producto)
+            .first()
+        )
+    except Exception as e:
+        print(f"Error: {e}")
+        abort(400, str(e))
     if producto:
         return True
     else:
@@ -107,4 +123,8 @@ def actualizar_categorias(id_producto, categorias):
 
 
 def producto_existe(id_producto):
-    return Producto.query.filter_by(id_producto=id_producto).first()
+    try:
+        return Producto.query.filter_by(id_producto=id_producto).first()
+    except Exception as e:
+        print(f"Error: {e}")
+        abort(400, str(e))

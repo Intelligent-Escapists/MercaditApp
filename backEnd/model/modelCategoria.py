@@ -41,7 +41,11 @@ def obtener_categorias_de_producto(id_producto):
 
 
 def obtener_todas_las_categorias():
-    categorias = db.session.query(CategoriasPredefinidas.nombre_categoria).all()
+    try:
+        categorias = db.session.query(CategoriasPredefinidas.nombre_categoria).all()
+    except Exception as e:
+        print(f"Error: {e}")
+        abort(400, str(e))
     if categorias:
         return [categoria.nombre_categoria for categoria in categorias]
     else:
