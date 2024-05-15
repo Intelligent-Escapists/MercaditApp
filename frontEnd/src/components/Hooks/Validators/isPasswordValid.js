@@ -1,3 +1,9 @@
 export const isPasswordValid = (password) => {
-    return password.length >= 6;
+    // Al menos una letra mayúscula
+    if (!/[A-Z]/.test(password) || !/\d/.test(password) || !/[-_]/.test(password)) {
+        return false;
+    }
+
+    // La contraseña cumple con todos los criterios de validación
+    return true;
 }
