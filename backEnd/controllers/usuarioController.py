@@ -35,8 +35,9 @@ def obtener_usuarios():
 def confirmar_email(token):
     try:
         correo = secret.loads(token, salt="email-confirm", max_age=1200)
+        print('CORREO',correo)
     except SignatureExpired:
-        return jsonify({"error": "El token ha expirado"}), 401
+        return jsonify({"error": "El token ha expirado"}), 498
     except BadTimeSignature:
         return jsonify({"error": "El token no es válido"}), 401
 
@@ -61,7 +62,7 @@ def crear_usuario():
     if modelUsuario.existe_usuario_correo(correo):
         return jsonify({"error": "El usuario con este correo ya existe"}), 409
 
-    if modelUsuario.existe_usuario_nomre_usuario(nombre_usuario):
+    if modelUsuario.existe_usuario_nombre_usuario(nombre_usuario):
         return jsonify({"error": "El nombre de usuario ya existe"}), 409
 
     password_hashed = sha256(crypto.cipher(password)).hexdigest()
@@ -74,7 +75,7 @@ def crear_usuario():
     token = secret.dumps(correo, salt="email-confirm")
     mensaje = "Bienvenido a MercaditApp, confirma tu correo"
     # f'http://localhost:5173/verificar-correo:{token}'
-    link = f"http://localhost:5173/verificar-correo:{token}"
+    link = f"http://localhost:5173/verificar-correo/{token}"
     print("Link: ", link)
     body = f"Para confirmar tu correo da click en el siguiente link: {link}"
     recipient = nuevo_usuario.correo
@@ -103,7 +104,7 @@ def login_usuario():
         return jsonify({"error": "correo o contraseña incorrectos"}), 401
 
     if usuario == -1:
-        return jsonify({"error": "Correo no verificado"}), 401
+        return jsonify({"error": "Correo no verificado"}), 403
 
     session["id_usuario"] = usuario.id_usuario
     return jsonify(
@@ -118,7 +119,7 @@ def login_usuario():
 @usuario_blueprint.route("/logout-usuario", methods=["POST"])
 def logout_usuario():
     session.pop("id_usuario", None)
-    return "200"
+    return 200
 
 
 @usuario_blueprint.route("/@usuario")
@@ -138,6 +139,9 @@ def get_usuario_autenticado():
             "id_usuario": usuario.id_usuario,
             "correo": usuario.correo,
             "password": usuario.password,
+            "telefono": usuario.telefono,
+            "email_confirmado": usuario.email_confirmado,
+            "rol": modelRol.rol_de_usuario(usuario.id_usuario)
         }
     )
 

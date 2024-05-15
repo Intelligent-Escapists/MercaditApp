@@ -30,7 +30,7 @@ def confirmar_email(usuario):
         db.session.commit()
     except Exception as e:
         abort(400, str(e))
-    return "200"
+    return 200
 
 def validar_usuario(correo, password):
     usuario = Usuario.query.filter_by(correo=correo).first()
@@ -56,5 +56,5 @@ def existe_usuario_correo(correo):
     return Usuario.query.filter_by(correo=correo).first() is not None
 
 
-def existe_usuario_nomre_usuario(nombre_usuario):
+def existe_usuario_nombre_usuario(nombre_usuario):
     return Usuario.query.filter_by(nombre_usuario=nombre_usuario).first() is not None

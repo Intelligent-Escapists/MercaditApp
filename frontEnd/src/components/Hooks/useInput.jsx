@@ -1,17 +1,21 @@
 import { useState } from "react";
 
-export default function useInput(initialValue, { errorMsg, validator }) {
+export default function useInput(initialValue, { errorMsg, validator, isRadioButton = false }) {
     const [value, setValue] = useState(initialValue);
     const [error, setError] = useState('');
 
+
     const handleChange = (e) => {
-        const value = e.target.value;
+        const value = isRadioButton ? e : e.target.value;
         setValue(value)
-        const isValid = validator(value);
-        if (!isValid) {
-            setError(errorMsg);
-        } else {
-            setError('');
+        if (validator) {
+
+            const isValid = validator(value);
+            if (!isValid) {
+                setError(errorMsg);
+            } else {
+                setError('');
+            }
         }
     };
 

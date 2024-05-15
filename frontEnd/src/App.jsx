@@ -1,28 +1,35 @@
-import { Car } from "lucide-react"
-import { Button } from "./components/ui/button"
-
+import { Toaster } from 'sonner'
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom"
-import Form from "./components/Form/Form";
-import Home from "./components/Home/Home";
+import Root from "./components/Root/Root";
 import { ThemeProvider } from "@/components/theme-provider"
-import Logged from "./components/Logged/Logged";
+import Home from './components/Home/Home';
+import Registro from './components/Forms/Registro';
+import HomePanel from './components/Root/HomePanel';
+import CorreoEnviado from './components/RegisterPanel/CorreoEnviado';
+import CorreoConfirmado from './components/RegisterPanel/CorreoConfirmado';
 
 function App() {
 
   const router = createBrowserRouter(createRoutesFromElements(
     <>
-
-      <Route path="/home" element={<Home />} />
-      <Route path="/form/:type" element={<Form />} />
-      <Route path="/logged" element={<Logged />} />
+      <Route path="/" element={< Root />}>
+        <Route index element={<HomePanel />} />
+        <Route path="registro" element={<Registro />} />
+        <Route path="correo-enviado" element={<CorreoEnviado />} />
+        <Route path="verificar-correo/:token" element={<CorreoConfirmado />} />
+        <Route path="home" element={< Home />} />
+      </Route>
     </>
   ));
 
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <Toaster position="top-center" richColors />
       <RouterProvider router={router} />
     </ThemeProvider>
   )
 }
 
 export default App
+
+
