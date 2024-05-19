@@ -45,7 +45,7 @@ def validar_usuario(correo, password):
 
 
 def buscar_usuario_por_id(id_usuario):
-    return Usuario.query.filter_by(id_usuario=id_usuario).first() is not None
+    return Usuario.query.filter_by(id_usuario=id_usuario).first() 
 
 
 def buscar_usuario_por_correo(correo):

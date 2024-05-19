@@ -7,15 +7,6 @@ from controllers import productoController
 
 
 def agregar_categoria_a_producto(id_producto, categoria):
-    # Verificar si la categoría existe en categorias_predefinidas
-    categoria_predefinida = (
-        db.session.query(CategoriasPredefinidas)
-        .filter(CategoriasPredefinidas.nombre_categoria == categoria)
-        .first()
-    )
-    if not categoria_predefinida:
-        return f"Categoria '{categoria}' no existe en categorias_predefinidas"
-
     nueva_categoria = Categoria(id_producto=id_producto, categoria=categoria)
 
     try:
@@ -25,8 +16,12 @@ def agregar_categoria_a_producto(id_producto, categoria):
         db.session.rollback()
         return str(e)
 
-    return None  # Retornar None si no hay errores
+    return nueva_categoria.categoria  # Retornar None si no hay errores
 
+def existe_categoria_predefinida(categoria):
+    # Verificar si la categoría existe en categorias_predefinidas
+    return db.session.query(CategoriasPredefinidas).filter(CategoriasPredefinidas.nombre_categoria == categoria).first()
+    
 
 def obtener_categorias_de_producto(id_producto):
     producto = productoController.obtenProducto(id_producto=id_producto)

@@ -6,6 +6,7 @@ from flask import Blueprint, request, jsonify, session, url_for
 from cryptoUtils import CryptoUtils as crypto
 from hashlib import sha256
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
+import os
 
 
 from model import modelCalificar as modelCalificar
@@ -23,17 +24,25 @@ secret = URLSafeTimedSerializer(
 )
 
 
-@producto_blueprint.route("/consultar-producto/<int:id_producto>", methods=["GET"])
+@producto_blueprint.route("/obtener-producto/<int:id_producto>", methods=["GET"])
 def consultar_producto_por_id(id_producto):
+
     producto = model.consultar_producto_por_id(id_producto)
     if producto is None:
-        return jsonify({"error": "No se encontro el producto"}), 404
+        return jsonify({"error": "No se encontro el producto"}), 409
+    
+
+    
+    imagen_producto = obtener_imagen_producto(producto.foto)
+    
+
     return (
         jsonify(
             {
                 "id_producto": producto.id_producto,
                 "nombre": producto.nombre,
                 "descripcion": producto.descripcion,
+                "foto": imagen_producto,
                 "precio": producto.precio,
                 "no_stock": producto.no_stock,
             }
@@ -41,12 +50,23 @@ def consultar_producto_por_id(id_producto):
         200,
     )
 
+def obtener_imagen_producto(foto_producto):
+    from app import app
+    file_path = os.path.join(app.config["UPLOAD_FOLDER"], foto_producto)
+    imagen_producto = model.obtener_imagen_producto(file_path)
 
-@producto_blueprint.route("/consultar-productos", methods=["GET"])
+    if imagen_producto is None:
+        return jsonify({"error": "No se encontro la imagen del producto"}), 409
+    
+    base64_imagen = f"data:image/{file_path.split('.')[-1]};base64,{imagen_producto}"
+
+    return base64_imagen
+
+@producto_blueprint.route("/productos", methods=["GET"])
 def consultar_productos():
     productos = model.consultar_productos()
     if productos is None:
-        return jsonify({"error": "No hay productos"}), 404
+        return jsonify({"error": "No hay productos"}), 409
     return (
         jsonify(
             [
@@ -63,62 +83,6 @@ def consultar_productos():
         200,
     )
 
-
-@producto_blueprint.route("/crear-producto", methods=["POST"])
-def crear_producto():
-    id_usuario = request.json["id_usuario"]
-    id_carrito = request.json["id_carrito"]
-    nombre = request.json["nombre"]
-    descripcion = request.json["descripcion"]
-    foto = request.json["foto"]
-    no_stock = request.json["no_stock"]
-    precio = request.json["precio"]
-    calificacion = request.json["calificacion"]
-    id_compra = request.json["id_compra"]
-
-    if (
-        id_usuario is None
-        or id_carrito is None
-        or nombre is None
-        or descripcion is None
-        or foto is None
-        or no_stock is None
-        or precio is None
-        or calificacion is None
-        or id_compra is None
-    ):
-        return jsonify({"error": "Datos faltantes para crear el producto"}), 400
-    try:
-        nuevo_producto = model.crear_producto(
-            id_usuario,
-            id_carrito,
-            nombre,
-            descripcion,
-            foto,
-            no_stock,
-            precio,
-            calificacion,
-            id_compra,
-        )
-        return (
-            jsonify(
-                {
-                    "id_producto": nuevo_producto.id_producto,
-                    "nombre": nuevo_producto.nombre,
-                    "descripcion": nuevo_producto.descripcion,
-                    "precio": nuevo_producto.precio,
-                    "no_stock": nuevo_producto.no_stock,
-                }
-            ),
-            201,
-        )
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-
-producto_blueprint = Blueprint("producto", __name__, url_prefix="/producto")
-
-
 @producto_blueprint.route("/agregar-producto", methods=["POST"])
 def agregar_producto():
     id_usuario = request.json["id_usuario"]
@@ -130,15 +94,18 @@ def agregar_producto():
     categoria = request.json["categoria"]
 
     if not modelUsuario.buscar_usuario_por_id(id_usuario):
-        return jsonify({"error": "El usuario no existe"})
+        return jsonify({"error": "El usuario no existe"}), 403
 
     if modelRol.rol_de_usuario(id_usuario) == 1:
-        return jsonify({"error": "Solo vendedores pueden agregar productos"})
+        return jsonify({"error": "Solo vendedores pueden agregar productos"}), 401
 
     if modelProducto.existe_producto(id_usuario, nombre):
         return jsonify(
             {"error": "Ya se tiene registrado este producto con este nombre"}
-        )
+        ), 409
+    
+    if modelCategoria.existe_categoria_predefinida(categoria) is None:
+        return jsonify({"error": "La categoria no existe"}), 409
 
     nuevo_producto = modelProducto.agregar_producto(
         id_usuario, nombre, descripcion, foto, cantidad, precio
@@ -158,12 +125,12 @@ def agregar_producto():
                 "no_stock": nuevo_producto.no_stock,
                 "foto": nuevo_producto.foto,
                 "calificacion": nuevo_producto.calificacion,
-                "categoria": nueva_categoria.categoria,
+                "categoria": nueva_categoria,
             }
         ),
         201,
     )
-
+9
 
 @producto_blueprint.route("/eliminar-producto/<id_producto>", methods=["DELETE"])
 def eliminar_producto(id_producto):
