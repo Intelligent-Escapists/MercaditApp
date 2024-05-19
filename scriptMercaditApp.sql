@@ -141,6 +141,8 @@ VALUES
 ('usuario2', 'usuario2@example.com', 'contraseña456', '987654321', TRUE, TRUE);
 
 SELECT * FROM usuario;
+SELECT * FROM producto;
+DELETE FROM producto WHERE id_producto = 6;
 
 -- Insertar roles de ejemplo
 INSERT INTO rol (id_usuario, id_rol) 
