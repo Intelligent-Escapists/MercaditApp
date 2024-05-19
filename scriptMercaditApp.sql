@@ -12,11 +12,11 @@ USE mercaditApp;
 DROP TABLE IF EXISTS tener;
 DROP TABLE IF EXISTS categoria;
 DROP TABLE IF EXISTS comentario;
+DROP TABLE IF EXISTS calificacion;
 DROP TABLE IF EXISTS producto;
 DROP TABLE IF EXISTS carrito;
 DROP TABLE IF EXISTS rol;
 DROP TABLE IF EXISTS usuario;
-DROP TABLE IF EXISTS calificacion;
 DROP TABLE IF EXISTS categorias_predefinidas;
 
 
@@ -76,7 +76,7 @@ CREATE TABLE calificacion(
 	PRIMARY KEY(id_producto,id_usuario),
 	FOREIGN KEY(id_producto) REFERENCES producto(id_producto) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE tener (
 	id_usuario INT, 
@@ -99,19 +99,6 @@ CREATE TABLE comentario (
     
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci; 
 
-
-CREATE TABLE categoria (
-    id_producto INT,
-    categoria VARCHAR(50),
-    PRIMARY KEY (id_producto, categoria),
-    FOREIGN KEY (id_producto) REFERENCES producto (id_producto) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_categoria
-    FOREIGN KEY (categoria)
-    REFERENCES categorias_predefinidas (nombre_categoria)
-    ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
 CREATE TABLE categorias_predefinidas (
     categoria_id INT AUTO_INCREMENT PRIMARY KEY,
     nombre_categoria VARCHAR(50),
@@ -133,13 +120,27 @@ INSERT INTO categorias_predefinidas (nombre_categoria) VALUES
 ('Automóviles y Motocicletas');
 
 
-use mercaditApp;
+CREATE TABLE categoria (
+    id_producto INT,
+    categoria VARCHAR(50),
+    PRIMARY KEY (id_producto, categoria),
+    FOREIGN KEY (id_producto) REFERENCES producto (id_producto) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_categoria
+    FOREIGN KEY (categoria)
+    REFERENCES categorias_predefinidas (nombre_categoria)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
 
 -- Insertar usuarios de ejemplo
 INSERT INTO usuario (nombre_usuario, correo, password, telefono, email_confirmado, esVendedor) 
 VALUES 
 ('usuario1', 'usuario1@example.com', 'contraseña123', '123456789', TRUE, FALSE),
 ('usuario2', 'usuario2@example.com', 'contraseña456', '987654321', TRUE, TRUE);
+
+SELECT * FROM usuario;
 
 -- Insertar roles de ejemplo
 INSERT INTO rol (id_usuario, id_rol) 
@@ -157,9 +158,7 @@ VALUES
 -- Insertar calificaciones de ejemplo
 INSERT INTO calificacion (id_producto, id_usuario, calificacion) 
 VALUES 
-(1, 2, 9),
-(2, 2, 8),
-(3, 1, 10);
+(2, 2, 8);
 
 -- Insertar comentarios de ejemplo
 INSERT INTO comentario (id_producto, id_usuario, comentario) 
@@ -184,7 +183,4 @@ SET calificacion = null
 WHERE id_producto = 1;
 
 select * from categoria where id_producto = 1;
-
-INSERT INTO calificacion (id_producto, id_usuario, calificacion) VALUES (1,3,8);
-DELETE FROM calificacion where calificacion = 9 and id_usuario = 2
 
