@@ -14,3 +14,5 @@ class Applicationconfig:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')   
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
+
+    UPLOAD_FOLDER = os.path.join(os.getcwd(), 'product-images')

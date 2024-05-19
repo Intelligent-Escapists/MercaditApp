@@ -1,3 +1,7 @@
+import base64
+import os
+from werkzeug.utils import secure_filename
+
 from flask import request, abort, session
 from flask.json import jsonify
 from cryptoUtils import CryptoUtils as crypto
@@ -10,11 +14,22 @@ from controllers import productoController
 def agregar_producto(
     id_usuario, nombre, descripcion, foto, no_stock, precio, calificacion=0
 ):
+    from app import app
+
+    header, encoded = foto.split(",", 1)
+    file_data = base64.b64decode(encoded)
+    file_extension = header.split("/")[1].split(";")[0]
+    file_name = secure_filename(f"{nombre}.{file_extension}")
+    file_path = os.path.join(app.config["UPLOAD_FOLDER"], file_name)
+
+    with open(file_path, "wb") as file:
+        file.write(file_data)
+
     nuevo_producto = Producto(
         id_usuario=id_usuario,
         nombre=nombre,
         descripcion=descripcion,
-        foto=foto,
+        foto=file_name,
         no_stock=no_stock,
         precio=precio,
         calificacion=calificacion,
@@ -28,15 +43,21 @@ def agregar_producto(
 
 
 def consultar_producto_por_id(id_producto):
+    producto = Producto.query.filter_by(id_producto=id_producto).first()
+    return producto
+
+def obtener_imagen_producto(path):
+   
+    encoded_string = None
     try:
-        producto = Producto.query.filter_by(id_producto=id_producto).first()
+        with open(path, "rb") as file:
+            file_data = file.read()
+            encoded_string = base64.b64encode(file_data).decode("utf-8")
     except Exception as e:
         print(f"Error: {e}")
         abort(400, str(e))
-    if producto is None:
-        abort(404, description="Producto no encontrado")
-    return producto
 
+    return encoded_string
 
 def consultar_productos():
     try:

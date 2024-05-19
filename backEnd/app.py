@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from config import Applicationconfig
@@ -17,6 +18,9 @@ app.config.from_object(Applicationconfig)
 CORS(app, supports_credentials=True)
 db.init_app(app)
 mail = Mail(app)
+
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
 
 
 def return_mail():

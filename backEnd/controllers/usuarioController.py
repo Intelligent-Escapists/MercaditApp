@@ -112,6 +112,9 @@ def login_usuario():
             "id_usuario": usuario.id_usuario,
             "correo": usuario.correo,
             "password": usuario.password,
+            "telefono": usuario.telefono,
+            "email_confirmado": usuario.email_confirmado,
+            "rol": modelRol.rol_de_usuario(usuario.id_usuario)
         }
     )
 
@@ -119,8 +122,7 @@ def login_usuario():
 @usuario_blueprint.route("/logout-usuario", methods=["POST"])
 def logout_usuario():
     session.pop("id_usuario", None)
-    return 200
-
+    return jsonify({"mensaje": "Sesión cerrada"}),200
 
 @usuario_blueprint.route("/@usuario")
 def get_usuario_autenticado():
@@ -131,7 +133,7 @@ def get_usuario_autenticado():
 
     usuario = modelUsuario.buscar_usuario_por_id(id_usuario)
 
-    if not usuario:
+    if usuario is None:
         return jsonify({"error": "Usuario no encontrado"}), 404
 
     return jsonify(
