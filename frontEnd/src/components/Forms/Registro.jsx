@@ -1,4 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "@/providers/UserProvider";
 
 import {
     Card,
@@ -28,6 +30,7 @@ import { axiosInstance } from "@/services/Axios/axiosClient";
 export default function Registro() {
 
     const navigate = useNavigate();
+    const { toggleRegister } = useContext(UserContext);
 
     const nombre_usuarioInput = useInput('', { errorMsg: 'Nombre de usuario invalido', validator: isLengthOk });
     const correoInput = useInput('', { errorMsg: 'Correo invalido', validator: isEmailValid });
@@ -146,7 +149,7 @@ export default function Registro() {
                         </form>
                     </CardContent>
                     <CardFooter className="col-span-2">
-                        <small className=" mr-2">¿Ya tienes una cuenta?</small> <small><Link to="/" className="text-blue-500 font-medium">Inicia Sesión</Link></small>
+                        <small className=" mr-2">¿Ya tienes una cuenta?</small> <small><Link to="/" className="text-blue-500 font-medium" onClick={toggleRegister}>Inicia Sesión</Link></small>
                     </CardFooter>
                 </Card>
 

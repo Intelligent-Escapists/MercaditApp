@@ -1,8 +1,8 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "@/services/Axios/axiosClient";
+import { useContext } from "react";
+import { UserContext } from "@/providers/UserProvider";
 
 import {
     Card,
@@ -23,7 +23,7 @@ import { isEmailValid } from "../Hooks/Validators/isEmailValid";
 
 export default function Login() {
     const navigate = useNavigate();
-    const [errormsg, setErrormsg] = useState('');
+    const { login, toggleRegister } = useContext(UserContext);
 
     // useEffect(() => {
 
@@ -43,19 +43,17 @@ export default function Login() {
             "password": passwordInput.value
         }
 
-        axiosInstance.post('/usuario/login-usuario', usuario)
-            .then((res) => {
-                console.log(res);
-                navigate('/home')
-            })
-            .catch((err) => {
-                if (err.response.status === 401) {
-                    setErrormsg('Correo o contraseña incorrectos');
-                }
-                else if (err.response.status === 403) {
-                    setErrormsg('Correo no verificado, por favor verifica tu correo');
-                }
-            })
+        const result = await login(usuario);
+        console.log(result);
+
+        if (result !== undefined && result.error) {
+            console.log(result.error);
+            toast.error(result.error);
+        } else {
+            navigate('/home');
+        }
+
+
 
 
     }
@@ -92,7 +90,7 @@ export default function Login() {
                         </form>
                     </CardContent>
                     <CardFooter>
-                        <small className=" mr-2">¿No tienes cuenta?</small> <small><Link to="/registro" className="text-blue-500 font-medium">Registrate</Link></small>
+                        <small className=" mr-2">¿No tienes cuenta?</small> <small><Link to="/registro" className="text-blue-500 font-medium" onClick={toggleRegister}>Registrate</Link></small>
                     </CardFooter>
                 </Card>
 
