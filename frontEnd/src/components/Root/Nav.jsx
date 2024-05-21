@@ -13,10 +13,13 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 import { Button } from "../ui/button";
+import UserIcon from "../Icons/UserIcon";
+import CartIcon from "../Icons/CartIcon";
 
 
 export default function Nav() {
@@ -77,10 +80,29 @@ export default function Nav() {
                     }
                     {user ?
 
-                        <div className="">
+                        <div className="flex  gap-7">
+                            {user.rol === 0 &&
+
+                                <NavigationMenuItem>
+                                    <Link to="/carrito">
+                                        <CartIcon className="w-10 h-10 text-white" />
+                                    </Link>
+
+                                </NavigationMenuItem>
+                            }
                             <NavigationMenuItem>
-                                <Button className="text-lg font-semibold" onClick={handleClickLogOut}>Log Out</Button>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger className="text-xl focus:outline-none text-white">
+                                        <UserIcon className=" w-10 h-10" />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className=" w-36 text-lg ">
+                                        <DropdownMenuItem className="hover:cursor-pointer">Perfil</DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem className="hover:cursor-pointer" onClick={handleClickLogOut}>Cerrar Sesión</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </NavigationMenuItem>
+
                         </div>
                         :
                         <div className="">

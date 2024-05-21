@@ -76,6 +76,7 @@ def consultar_productos():
                     "descripcion": producto.descripcion,
                     "precio": producto.precio,
                     "no_stock": producto.no_stock,
+                    "foto": obtener_imagen_producto(producto.foto)
                 }
                 for producto in productos
             ]
@@ -96,7 +97,7 @@ def agregar_producto():
     if not modelUsuario.buscar_usuario_por_id(id_usuario):
         return jsonify({"error": "El usuario no existe"}), 403
 
-    if modelRol.rol_de_usuario(id_usuario) == 1:
+    if modelRol.rol_de_usuario(id_usuario) == 0:
         return jsonify({"error": "Solo vendedores pueden agregar productos"}), 401
 
     if modelProducto.existe_producto(id_usuario, nombre):

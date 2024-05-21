@@ -1,59 +1,66 @@
 // import { Login } from "@/components/Forms/Login";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader
+} from "@/components/ui/card"
+
+import { toast } from "sonner";
 
 import { axiosInstance } from "@/services/Axios/axiosClient";
+import CartIcon from "../Icons/CartIcon";
 
 export default function Home() {
-    const [picture, setPicture] = useState(null);
-    const [base64Picture, setBase64Picture] = useState('');
 
-    const onSubmitHandler = (e) => {
-        e.preventDefault();
-        console.log('submit');
-        console.log(picture);
-        axiosInstance.get(`producto/obtener-producto/${picture}`)
+    const [productos, setProductos] = useState([]);
+
+    useEffect(() => {
+        axiosInstance.get('producto/productos')
             .then((res) => {
-                console.log(res.data);
-                setBase64Picture(res.data["foto"]);
+                setProductos(res.data);
             })
-            .catch((err) => { console.log(err) })
-    }
+            .catch((err) => { toast(err) })
+        console.log(productos);
+    }, []);
 
-    const changePicture = (e) => {
-        const file = e.target.value;
-        setPicture(file);
-    }
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('es-US', { style: 'currency', currency: 'USD' }).format(amount);
+    };
 
-    // const convertToBase64 = (file) => {
-    //     const reader = new FileReader();
-    //     reader.readAsDataURL(file);
-    //     reader.onload = () => {
-    //         setBase64String(reader.result);
-    //     };
-    //     reader.onerror = (error) => {
-    //         console.error('Error converting file to Base64', error);
-    //     };
-    // };
+
 
     return (
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center">
+            <div className="overflow-y-auto">
 
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-                <form onSubmit={onSubmitHandler}>
-                    <Label htmlFor="picture">Picture</Label>
-                    <Input id="picture" type="text" onChange={changePicture} value={picture} />
-                    <button type="submit">Submit</button>
-                    {base64Picture && (
-                        <div>
-                            <p>Base64 String:</p>
-                            <img src={base64Picture} alt="Selected" style={{ maxWidth: '100%', maxHeight: '300px' }} />
-                        </div>
-                    )}
-                </form>
+
+                <div className="grid grid-cols-3 gap-6">
+                    {productos.map((producto) => (
+                        <Card key={producto.id_producto} className="h-92 w-96">
+                            <CardHeader className="flex items-center">
+                                <img src={producto.foto} alt={producto.nombre} className=" h-52 w-48 rounded-md" />
+                            </CardHeader>
+                            <CardContent>
+                                <p className=" text-lg font-medium">{producto.nombre}</p>
+                                <p className=" text-3xl font-semibold text-indigo-800">{formatCurrency(producto.precio)}</p>
+                            </CardContent>
+                            <CardFooter>
+                                <Button className="w-full font-semibold hover:scale-100" >
+                                    <CartIcon className="h-5 w-5 mr-2" />
+                                    <span className=" text-base ">Agregar al carrito</span>
+                                </Button>
+                            </CardFooter>
+
+                        </Card>
+                    ))}
+                </div>
+
             </div>
+
 
 
         </div>
