@@ -27,7 +27,6 @@ CREATE TABLE usuario (
     password VARCHAR(64) NOT NULL,
     telefono VARCHAR(13) NOT NULL,
     email_confirmado BOOL DEFAULT FALSE,
-    esVendedor BOOL DEFAULT FALSE,
     PRIMARY KEY(id_usuario),
     UNIQUE KEY(correo),
     UNIQUE KEY(nombre_usuario)
@@ -135,10 +134,10 @@ CREATE TABLE categoria (
 
 
 -- Insertar usuarios de ejemplo
-INSERT INTO usuario (nombre_usuario, correo, password, telefono, email_confirmado, esVendedor) 
+INSERT INTO usuario (nombre_usuario, correo, password, telefono, email_confirmado) 
 VALUES 
-('usuario1', 'usuario1@example.com', 'contraseña123', '123456789', TRUE, FALSE),
-('usuario2', 'usuario2@example.com', 'contraseña456', '987654321', TRUE, TRUE);
+('usuario1', 'usuario1@example.com', 'contraseña123', '123456789', TRUE),
+('usuario2', 'usuario2@example.com', 'contraseña456', '987654321', TRUE);
 
 SELECT * FROM usuario;
 SELECT * FROM producto;

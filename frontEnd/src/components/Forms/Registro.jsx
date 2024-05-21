@@ -38,7 +38,7 @@ export default function Registro() {
 
     const telefonoInput = useInput('', { errorMsg: 'Telefono invalido', validator: isPhoneNumber });
 
-    const rolInput = useInput(1, { errorMsg: 'Rol invalido', isRadioButton: true });
+    const rolInput = useInput(0, { errorMsg: 'Rol invalido', isRadioButton: true });
 
     const hayErrores = () => {
         return nombre_usuarioInput.error || correoInput.error || passwordInput.error || telefonoInput.error || rolInput.error;
@@ -130,11 +130,11 @@ export default function Registro() {
                                     <Label htmlFor='password'>¿Eres vendedor?<span className="text-red-500">*</span></Label>
                                     <RadioGroup defaultValue={rolInput.value} onValueChange={rolInput.onChange}>
                                         <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value={1} id="option-one" />
+                                            <RadioGroupItem value={0} id="option-one" />
                                             <Label htmlFor="option-one">No</Label>
                                         </div>
                                         <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value={0} id="option-two" />
+                                            <RadioGroupItem value={1} id="option-two" />
                                             <Label htmlFor="option-two">Si</Label>
                                         </div>
                                     </RadioGroup>
