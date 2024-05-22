@@ -7,6 +7,7 @@ import Registro from './components/Forms/Registro';
 import HomePanel from './components/Root/HomePanel';
 import CorreoEnviado from './components/RegisterPanel/CorreoEnviado';
 import CorreoConfirmado from './components/RegisterPanel/CorreoConfirmado';
+import { UserProvider } from './providers/UserProvider';
 
 function App() {
 
@@ -23,10 +24,12 @@ function App() {
   ));
 
   return (
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <Toaster position="top-center" richColors />
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <UserProvider>
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+        <Toaster position="top-center" richColors />
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </UserProvider>
   )
 }
 
