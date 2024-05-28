@@ -7,6 +7,7 @@ export const UserContext = createContext();
 // eslint-disable-next-line react/prop-types
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [loged, setLoged] = useState(false);
     const [register, setRegister] = useState(false);
 
     useEffect(() => {
@@ -24,6 +25,7 @@ export function UserProvider({ children }) {
         try {
             const res = await axiosInstance.post('/usuario/login-usuario', usuario);
             setUser(res.data);
+            setLoged(true);
             console.log(res.data);
             return res.data;
         } catch (err) {
@@ -54,7 +56,7 @@ export function UserProvider({ children }) {
     }
 
     return (
-        <UserContext.Provider value={{ user, login, logout, register, toggleRegister }}>
+        <UserContext.Provider value={{ user, login, logout, register, toggleRegister, loged }}>
             {children}
         </UserContext.Provider>
     )
