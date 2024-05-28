@@ -24,7 +24,7 @@ export default function Login() {
     useEffect(() => {
         if (user) {
             logout();
-            navigate('/'); // O redirige a otra página según tu lógica
+            navigate('/');
         }
     }, [user, logout, navigate]);
 

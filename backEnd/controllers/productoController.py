@@ -7,7 +7,7 @@ from cryptoUtils import CryptoUtils as crypto
 from hashlib import sha256
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 import os
-
+import base64
 
 from model import modelCalificar as modelCalificar
 from model import modelProducto as modelProducto
@@ -30,11 +30,8 @@ def consultar_producto_por_id(id_producto):
     producto = model.consultar_producto_por_id(id_producto)
     if producto is None:
         return jsonify({"error": "No se encontro el producto"}), 409
-    
 
-    
     imagen_producto = obtener_imagen_producto(producto.foto)
-    
 
     return (
         jsonify(
@@ -50,17 +47,20 @@ def consultar_producto_por_id(id_producto):
         200,
     )
 
+
 def obtener_imagen_producto(foto_producto):
     from app import app
+
     file_path = os.path.join(app.config["UPLOAD_FOLDER"], foto_producto)
     imagen_producto = model.obtener_imagen_producto(file_path)
 
     if imagen_producto is None:
         return jsonify({"error": "No se encontro la imagen del producto"}), 409
-    
+
     base64_imagen = f"data:image/{file_path.split('.')[-1]};base64,{imagen_producto}"
 
     return base64_imagen
+
 
 @producto_blueprint.route("/productos", methods=["GET"])
 def consultar_productos():
@@ -76,13 +76,14 @@ def consultar_productos():
                     "descripcion": producto.descripcion,
                     "precio": producto.precio,
                     "no_stock": producto.no_stock,
-                    "foto": obtener_imagen_producto(producto.foto)
+                    "foto": obtener_imagen_producto(producto.foto),
                 }
                 for producto in productos
             ]
         ),
         200,
     )
+
 
 @producto_blueprint.route("/agregar-producto", methods=["POST"])
 def agregar_producto():
@@ -101,10 +102,11 @@ def agregar_producto():
         return jsonify({"error": "Solo vendedores pueden agregar productos"}), 401
 
     if modelProducto.existe_producto(id_usuario, nombre):
-        return jsonify(
-            {"error": "Ya se tiene registrado este producto con este nombre"}
-        ), 409
-    
+        return (
+            jsonify({"error": "Ya se tiene registrado este producto con este nombre"}),
+            409,
+        )
+
     if modelCategoria.existe_categoria_predefinida(categoria) is None:
         return jsonify({"error": "La categoria no existe"}), 409
 
@@ -131,7 +133,10 @@ def agregar_producto():
         ),
         201,
     )
+
+
 9
+
 
 @producto_blueprint.route("/eliminar-producto/<id_producto>", methods=["DELETE"])
 def eliminar_producto(id_producto):
