@@ -25,6 +25,7 @@ export function UserProvider({ children }) {
             const res = await axiosInstance.post('/usuario/login-usuario', usuario);
             setUser(res.data);
             console.log(res.data);
+            return res.data;
         } catch (err) {
             console.log(err.response.status);
             if (err.response.status === 401) {

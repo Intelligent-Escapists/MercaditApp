@@ -23,6 +23,8 @@
     "lucide-react": "^0.373.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-easy-crop": "^5.0.7",
+    "react-image-file-resizer": "^0.4.8",
     "react-router-dom": "^6.23.0",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.3.0",
