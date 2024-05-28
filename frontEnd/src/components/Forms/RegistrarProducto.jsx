@@ -4,21 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { toast } from "sonner";
+
+import useInput from "../Hooks/useInput";
+import { isNumberValid } from "../Hooks/Validators/isNumberValid";
+
 import { axiosInstance } from "@/services/Axios/axiosClient";
 
 export default function RegistrarProducto() {
-    const { user } = useContext(UserContext);
-    const [productos, setProductos] = useState([]);
-    const [categorias, setCategorias] = useState([]);
-    const [nombre, setNombre] = useState("");
-    const [descripcion, setDescripcion] = useState("");
-    const [foto, setFoto] = useState(null);
-    const [stock, setStock] = useState("");
-    const [precio, setPrecio] = useState("");
-    const [categoria, setCategoria] = useState("");
-
     useEffect(() => {
         axiosInstance.get('producto/productos')
             .then((res) => {
@@ -34,34 +35,78 @@ export default function RegistrarProducto() {
             .catch((err) => { toast.error("Error al cargar las categorías"); });
     }, []);
 
+
+    const { user } = useContext(UserContext);
+    // console.log(user);
+    const [productos, setProductos] = useState([]);
+    const [categorias, setCategorias] = useState([]);
+    const nombreInput = useInput('', { errorMsg: 'Nombre invalido' });
+    const descripcionInput = useInput('', { errorMsg: 'Descripción invalida' });
+    const precioInput = useInput('', { errorMsg: 'Precio invalido', validator: isNumberValid });
+    const cantidadInput = useInput('', { errorMsg: 'Cantidad invalida', validator: isNumberValid });
+
+    const [categoriaInput, setCategoriaInput] = useState('');
+    const [foto, setFoto] = useState('');
+    const [fotoError, setFotoError] = useState('');
+
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            try {
+                const base64 = await convertToBase64(file);
+                setFoto(base64);
+                setFotoError("");
+            } catch (error) {
+                setFotoError("Error al cargar la imagen");
+            }
+        }
+    };
+    const handleCategoriaChange = (value) => {
+        setCategoriaInput(value);
+    }
+
+    // Función para convertir archivo a base64
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    };
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('id_usuario', user.id); // Asumiendo que el id del usuario está en user.id
-        formData.append('nombre', nombre);
-        formData.append('descripcion', descripcion);
-        formData.append('foto', foto);
-        formData.append('cantidad', stock);
-        formData.append('precio', precio);
-        formData.append('categoria', categoria);
+
+        const productToSend = {
+            id_usuario: user.id_usuario,
+            nombre: nombreInput.value,
+            descripcion: descripcionInput.value,
+            precio: parseInt(precioInput.value),
+            cantidad: parseInt(cantidadInput.value),
+            categoria: categoriaInput,
+            foto: foto,
+        };
+
+        console.log(productToSend);
+
+        const productPromise = axiosInstance.post('/producto/agregar-producto', productToSend);
+
+        toast.promise(productPromise, {
+            loading: 'Registrando producto...',
+            success: 'Producto registrado exitosamente',
+            error: (error) => error.response?.data?.error || "Error al registrar el producto",
+        });
 
         try {
-            const response = await axiosInstance.post('/producto/agregar-producto', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
+            const response = await productPromise;
             if (response.status === 201) {
                 toast.success("Producto registrado exitosamente");
-                setNombre("");
-                setDescripcion("");
-                setFoto(null);
-                setStock("");
-                setPrecio("");
-                setCategoria("");
             }
         } catch (error) {
-            toast.error(error.response?.data?.error || "Error al registrar el producto");
+            console.error("Error al registrar el producto:", error);
         }
     };
 
@@ -75,96 +120,90 @@ export default function RegistrarProducto() {
 
     return (
         <div className="flex justify-center items-center">
-            <div className="overflow-y-auto">
-                <div className="grid grid-cols-1 gap-6">
+
+            <Card className='w-[450px] h-[730px]'>
+                <CardHeader>
+                    <CardTitle>Nuevo Producto</CardTitle>
+                    <CardDescription>Inicia con la nueva venta de un producto</CardDescription>
+                </CardHeader>
+                <CardContent>
                     <form onSubmit={handleSubmit}>
-                        <div className="grid w-full gap-4">
-                            <Card className='w-[450px] h-[640px]'>
-                                <CardHeader>
-                                    <CardTitle>Nuevo Producto</CardTitle>
-                                    <CardDescription>Inicia con la nueva venta de un producto</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="grid w-full gap-6">
-                                        <div className="flex flex-col items-start space-y-2">
-                                            <Label htmlFor='nombre'>Nombre</Label>
-                                            <Input
-                                                id='nombre'
-                                                type="text"
-                                                placeholder="Ej. Camisa"
-                                                value={nombre}
-                                                onChange={(e) => setNombre(e.target.value)}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="flex flex-col items-start space-y-2">
-                                            <Label htmlFor='descripcion'>Descripción</Label>
-                                            <Textarea
-                                                id='descripcion'
-                                                placeholder="Ej. Camisa negra con estampado de Star Wars"
-                                                value={descripcion}
-                                                onChange={(e) => setDescripcion(e.target.value)}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="flex flex-col items-start space-y-2">
-                                            <Label htmlFor='foto'>Foto</Label>
-                                            <Input
-                                                id='foto'
-                                                type="file"
-                                                onChange={(e) => setFoto(e.target.files[0])}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="flex flex-col items-start space-y-2">
-                                            <Label htmlFor='stock'>Stock</Label>
-                                            <Input
-                                                id='stock'
-                                                type="number"
-                                                placeholder="5"
-                                                value={stock}
-                                                onChange={(e) => setStock(e.target.value)}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="flex flex-col items-start space-y-2">
-                                            <Label htmlFor='precio'>Precio</Label>
-                                            <Input
-                                                id='precio'
-                                                type="number"
-                                                placeholder="5"
-                                                value={precio}
-                                                onChange={(e) => setPrecio(e.target.value)}
-                                                required
-                                            />
-                                        </div>
-                                        <div className="flex flex-col items-start space-y-2">
-                                            <Label htmlFor='categoria'>Categoría</Label>
-                                            <select
-                                                id='categoria'
-                                                value={categoria}
-                                                onChange={(e) => setCategoria(e.target.value)}
-                                                required
-                                                className="input"
-                                            >
-                                                <option value="" disabled>Selecciona una categoría</option>
-                                                {categorias.map((cat) => (
-                                                    <option key={cat} value={cat}>
-                                                        {cat}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <Button className='w-full mt-6 font-semibold' type="submit">
-                                        <span className="text-base">Subir Producto</span>
-                                    </Button>
-                                </CardContent>
-                            </Card>
+                        <div className="grid w-full gap-6">
+                            <div className="flex flex-col items-start space-y-2">
+                                <Label htmlFor='nombre'>Nombre</Label>
+                                <Input
+                                    name='nombre'
+                                    type="text"
+                                    placeholder="Ej. Camisa"
+                                    value={nombreInput.value}
+                                    onChange={nombreInput.onChange}
+                                    required
+                                />
+                            </div>
+                            <div className="flex flex-col items-start space-y-2">
+                                <Label htmlFor='descripcion'>Descripción</Label>
+                                <Textarea
+                                    name='descripcion'
+                                    placeholder="Ej. Camisa negra con estampado de Star Wars"
+                                    value={descripcionInput.value}
+                                    onChange={descripcionInput.onChange}
+                                    required
+                                />
+                            </div>
+                            <div className="flex flex-col items-start space-y-2">
+                                <Label htmlFor='foto'>Foto</Label>
+                                <Input
+                                    name='foto'
+                                    type="file"
+                                    onChange={handleFileChange}
+                                    required
+                                />
+                            </div>
+                            <div className="flex flex-col items-start space-y-2">
+                                <Label htmlFor='stock'>Stock</Label>
+                                <Input
+                                    name='cantidad'
+                                    type="text"
+                                    placeholder="5"
+                                    value={cantidadInput.value}
+                                    onChange={cantidadInput.onChange}
+                                    required
+                                />
+                            </div>
+                            <div className="flex flex-col items-start space-y-2">
+                                <Label htmlFor='precio'>Precio</Label>
+                                <Input
+                                    name='precio'
+                                    type="text"
+                                    placeholder="5"
+                                    value={precioInput.value}
+                                    onChange={precioInput.onChange}
+                                    required
+                                />
+                            </div>
+                            <div className="flex flex-col items-start space-y-2">
+                                <Label htmlFor='categoria'>Categoría</Label>
+                                <Select onValueChange={handleCategoriaChange} >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Selecciona una categoría" value={categoriaInput.value} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {categorias.map((cat) => (
+                                            <SelectItem key={cat} value={cat}>
+                                                {cat}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
+                        <Button className='w-full mt-6 font-semibold' type="submit">
+                            <span className="text-base">Subir Producto</span>
+                        </Button>
                     </form>
-                </div>
-            </div>
+                </CardContent>
+            </Card>
         </div>
+
     );
 }

@@ -19,8 +19,6 @@ CORS(app, supports_credentials=True)
 db.init_app(app)
 mail = Mail(app)
 
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
 
 
 def return_mail():

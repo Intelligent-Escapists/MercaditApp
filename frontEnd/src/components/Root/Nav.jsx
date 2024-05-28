@@ -21,13 +21,13 @@ import CartIcon from "../Icons/CartIcon";
 
 export default function Nav() {
     const navigate = useNavigate();
-    const { user, register, toggleRegister, logout } = useContext(UserContext);
+    const { user, register, toggleRegister, logout, loged } = useContext(UserContext);
 
     const handleLogoClick = () => {
         if (user) {
-            if (user.rol = 0)
+            if (user.rol == 0)
                 navigate('/homeCompra');
-            else if (user.rol = 1) {
+            else if (user.rol == 1) {
                 navigate('/homeVenta')
             }
         } else {
@@ -69,10 +69,10 @@ export default function Nav() {
                             </div>
                         </NavigationMenuItem>
                     </div>
-                    {user && (
+                    {user && loged && (
                         <Category />
                     )}
-                    {user ? (
+                    {user && loged ? (
                         <div className="flex gap-7">
                             {user.rol === 0 && (
                                 <NavigationMenuItem>
