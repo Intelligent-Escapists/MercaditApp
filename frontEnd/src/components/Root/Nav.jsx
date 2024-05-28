@@ -25,7 +25,11 @@ export default function Nav() {
 
     const handleLogoClick = () => {
         if (user) {
-            navigate('/home');
+            if (user.rol = 0)
+                navigate('/homeCompra');
+            else if (user.rol = 1) {
+                navigate('/homeVenta')
+            }
         } else {
             navigate('/');
         }

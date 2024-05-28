@@ -32,10 +32,10 @@ export default function Home() {
             </div>
         );
     }
-
     return (
         <div className="flex justify-center items-center">
             <div className="overflow-y-auto">
+                <h1>Sesion comprador {user.nombre_usuario}</h1>
                 <div className="grid grid-cols-3 gap-6">
                     {productos.map((producto) => (
                         <Card key={producto.id_producto} className="h-92 w-96">

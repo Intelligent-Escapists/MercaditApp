@@ -42,7 +42,11 @@ export default function Login() {
         if (result !== undefined && result.error) {
             toast.error(result.error);
         } else {
-            navigate('/home');
+            if (result.rol == 0) {
+                navigate('/homeCompra');
+            } else {
+                navigate('/homeVenta')
+            }
         }
     }
 
