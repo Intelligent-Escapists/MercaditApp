@@ -20,26 +20,22 @@ import { isNumberValid } from "../Hooks/Validators/isNumberValid";
 import { axiosInstance } from "@/services/Axios/axiosClient";
 
 export default function RegistrarProducto() {
+    const [categorias, setCategorias] = useState([]);
+
     useEffect(() => {
-        axiosInstance.get('producto/productos')
-            .then((res) => {
-                setProductos(res.data);
-            })
-            .catch((err) => { toast.error(err.message) });
+
 
         // Obtener las categorías desde la API
         axiosInstance.get('/producto/obtener-todas-las-categorias-existentes')
             .then((res) => {
                 setCategorias(res.data.categorias);
             })
-            .catch((err) => { toast.error("Error al cargar las categorías"); });
+            .catch((err) => { toast.error(err || "Error al cargar las categorías"); });
     }, []);
 
 
     const { user } = useContext(UserContext);
     // console.log(user);
-    const [productos, setProductos] = useState([]);
-    const [categorias, setCategorias] = useState([]);
     const nombreInput = useInput('', { errorMsg: 'Nombre invalido' });
     const descripcionInput = useInput('', { errorMsg: 'Descripción invalida' });
     const precioInput = useInput('', { errorMsg: 'Precio invalido', validator: isNumberValid });
@@ -185,7 +181,7 @@ export default function RegistrarProducto() {
                                 <Label htmlFor='categoria'>Categoría</Label>
                                 <Select onValueChange={handleCategoriaChange} >
                                     <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Selecciona una categoría" value={categoriaInput.value} />
+                                        <SelectValue placeholder="Selecciona una categoría" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {categorias.map((cat) => (
