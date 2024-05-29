@@ -11,6 +11,11 @@ import CorreoConfirmado from './components/RegisterPanel/CorreoConfirmado';
 import RegistrarProducto from './components/Forms/RegistrarProducto';
 import { UserProvider } from './providers/UserProvider';
 
+//mario_front
+import Comment from './components/Comments/Comment';
+
+
+
 function App() {
 
   const router = createBrowserRouter(createRoutesFromElements(
@@ -23,6 +28,7 @@ function App() {
         <Route path="homeCompra" element={< HomeComprador />} />
         <Route path="homeVenta" element={< HomeVendendor />} />
         <Route path="registra-producto" element={< RegistrarProducto />} />
+        <Route path="comentarios" element={< Comment />} />
       </Route>
     </>
   ));
