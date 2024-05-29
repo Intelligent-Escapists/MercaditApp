@@ -291,3 +291,9 @@ def filtrar_producto():
     categoria = request.json["categoria"]
     productos= modelCategoria.filtrar_categoria(categoria)
     return jsonify({"productos": productos})
+
+@producto_blueprint.route("/buscar-producto/", methods=["GET"])
+def buscar_producto_nombre():
+    nombre = request.json["nombre"]
+    productos = modelProducto.buscar_producto_por_nombre(nombre)
+    return jsonify({"id": productos})
