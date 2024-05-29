@@ -23,6 +23,7 @@ secret = URLSafeTimedSerializer(
     "ccf3062e71dd06559c9b2a6246653a4e1bc45699ff777386acd612098cf76a99"
 )
 
+
 def obtener_imagen_producto(foto_producto):
     from app import app
 
@@ -35,6 +36,7 @@ def obtener_imagen_producto(foto_producto):
     base64_imagen = f"data:image/{file_path.split('.')[-1]};base64,{imagen_producto}"
 
     return base64_imagen
+
 
 @producto_blueprint.route("/obtener-producto/<int:id_producto>", methods=["GET"])
 def consultar_producto_por_id(id_producto):
@@ -61,8 +63,6 @@ def consultar_producto_por_id(id_producto):
     )
 
 
-
-
 @producto_blueprint.route("/productos", methods=["GET"])
 def consultar_productos():
     productos = model.consultar_productos()
@@ -85,6 +85,7 @@ def consultar_productos():
         200,
     )
 
+
 @producto_blueprint.route("/productos/<int:id_usuario>", methods=["GET"])
 def consultar_productos_del_vendedor(id_usuario):
     productos = model.consultar_productos_del_vendedor(id_usuario)
@@ -106,6 +107,7 @@ def consultar_productos_del_vendedor(id_usuario):
         ),
         200,
     )
+
 
 @producto_blueprint.route("/agregar-producto", methods=["POST"])
 def agregar_producto():
@@ -217,8 +219,7 @@ def obten_calificacion():
 
 @producto_blueprint.route("/actualizar-producto", methods=["PUT"])
 def actualiza_producto():
-
-    # Tengo duda acerca de este metodo y como se comportará la actualizacion de una categoria
+    data = request.json
     id_producto = request.json["id_producto"]
     nombre = request.json["nombre"]
     descripcion = request.json["descripcion"]
@@ -226,6 +227,9 @@ def actualiza_producto():
     no_stock = request.json["no_stock"]
     precio = request.json["precio"]
     categorias = request.json.get("categorias", [])
+    print(id_producto, nombre, descripcion, no_stock, precio)
+    if not id_producto or not nombre or not descripcion or not no_stock or not precio:
+        return jsonify({"error": "Faltan datos requeridos"}), 400
 
     if modelProducto.producto_existe(id_producto=id_producto):
         producto_actualizado = modelProducto.actualizar_producto(
@@ -252,7 +256,7 @@ def actualiza_producto():
             }
         )
     else:
-        return jsonify({"error": "No existe el producto"})
+        return jsonify({"error": "No existe el producto"}), 404
 
 
 @producto_blueprint.route("/obtener-categorias-de-un-producto", methods=["GET"])
