@@ -24,6 +24,7 @@ export default function Nav() {
     const { user, register, toggleRegister, logout, loged } = useContext(UserContext);
 
     const handleLogoClick = () => {
+        toggleRegister();
         if (user) {
             if (user.rol == 0)
                 navigate('/homeCompra');
