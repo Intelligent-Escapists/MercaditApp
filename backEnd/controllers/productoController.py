@@ -23,6 +23,18 @@ secret = URLSafeTimedSerializer(
     "ccf3062e71dd06559c9b2a6246653a4e1bc45699ff777386acd612098cf76a99"
 )
 
+def obtener_imagen_producto(foto_producto):
+    from app import app
+
+    file_path = os.path.join(app.config["UPLOAD_FOLDER"], foto_producto)
+    imagen_producto = model.obtener_imagen_producto(file_path)
+
+    if imagen_producto is None:
+        return jsonify({"error": "No se encontro la imagen del producto"}), 409
+
+    base64_imagen = f"data:image/{file_path.split('.')[-1]};base64,{imagen_producto}"
+
+    return base64_imagen
 
 @producto_blueprint.route("/obtener-producto/<int:id_producto>", methods=["GET"])
 def consultar_producto_por_id(id_producto):
@@ -42,24 +54,13 @@ def consultar_producto_por_id(id_producto):
                 "foto": imagen_producto,
                 "precio": producto.precio,
                 "no_stock": producto.no_stock,
+                "categoria": modelCategoria.obtener_categorias_de_producto(id_producto),
             }
         ),
         200,
     )
 
 
-def obtener_imagen_producto(foto_producto):
-    from app import app
-
-    file_path = os.path.join(app.config["UPLOAD_FOLDER"], foto_producto)
-    imagen_producto = model.obtener_imagen_producto(file_path)
-
-    if imagen_producto is None:
-        return jsonify({"error": "No se encontro la imagen del producto"}), 409
-
-    base64_imagen = f"data:image/{file_path.split('.')[-1]};base64,{imagen_producto}"
-
-    return base64_imagen
 
 
 @producto_blueprint.route("/productos", methods=["GET"])
@@ -84,6 +85,27 @@ def consultar_productos():
         200,
     )
 
+@producto_blueprint.route("/productos/<int:id_usuario>", methods=["GET"])
+def consultar_productos_del_vendedor(id_usuario):
+    productos = model.consultar_productos_del_vendedor(id_usuario)
+    if productos is None:
+        return jsonify({"error": "No hay productos"}), 409
+    return (
+        jsonify(
+            [
+                {
+                    "id_producto": producto.id_producto,
+                    "nombre": producto.nombre,
+                    "descripcion": producto.descripcion,
+                    "precio": producto.precio,
+                    "no_stock": producto.no_stock,
+                    "foto": obtener_imagen_producto(producto.foto),
+                }
+                for producto in productos
+            ]
+        ),
+        200,
+    )
 
 @producto_blueprint.route("/agregar-producto", methods=["POST"])
 def agregar_producto():
@@ -193,7 +215,7 @@ def obten_calificacion():
         return jsonify({"error": "No existe calificacion"})
 
 
-@producto_blueprint.route("/actualizar-producto", methods=["POST"])
+@producto_blueprint.route("/actualizar-producto", methods=["PUT"])
 def actualiza_producto():
 
     # Tengo duda acerca de este metodo y como se comportará la actualizacion de una categoria

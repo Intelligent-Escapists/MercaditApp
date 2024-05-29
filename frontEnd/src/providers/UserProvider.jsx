@@ -14,6 +14,7 @@ export function UserProvider({ children }) {
         axiosInstance.get('/usuario/@usuario')
             .then((res) => {
                 setUser(res.data);
+                setLoged(true);
             })
             .catch((err) => {
                 console.log(err);

@@ -46,6 +46,18 @@ def consultar_producto_por_id(id_producto):
     producto = Producto.query.filter_by(id_producto=id_producto).first()
     return producto
 
+
+
+def consultar_productos_del_vendedor(id_usuario):
+    try:
+        productos = Producto.query.filter_by(id_usuario=id_usuario).all()
+    except Exception as e:
+        print(f"Error: {e}")
+        abort(400, str(e))
+    if productos is None:
+        abort(404, description="No hay productos")
+    return productos
+
 def obtener_imagen_producto(path):
    
     encoded_string = None
