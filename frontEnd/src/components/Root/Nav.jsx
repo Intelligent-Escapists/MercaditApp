@@ -16,7 +16,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
-import UserIcon from "../Icons/UserIcon";
 import CartIcon from "../Icons/CartIcon";
 
 export default function Nav() {
@@ -29,7 +28,7 @@ export default function Nav() {
             if (user.rol == 0)
                 navigate('/homeCompra');
             else if (user.rol == 1) {
-                navigate('/homeVenta')
+                navigate('/homeVenta');
             }
         } else {
             navigate('/');
@@ -48,6 +47,10 @@ export default function Nav() {
     const handleClickLogOut = () => {
         logout();
         navigate('/');
+    };
+
+    const handleClickUserDetail = () => {
+        navigate('/detalle-usuario');
     };
 
     return (
@@ -85,10 +88,10 @@ export default function Nav() {
                             <NavigationMenuItem>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger className="text-xl focus:outline-none text-white">
-                                        <UserIcon className="w-10 h-10" />
+                                        <img src={"../../src/assets/user1.png"} alt="User Avatar" className="w-10 h-10 rounded-full" />
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className="w-36 text-lg">
-                                        <DropdownMenuItem className="hover:cursor-pointer">Perfil</DropdownMenuItem>
+                                        <DropdownMenuItem className="hover:cursor-pointer" onClick={handleClickUserDetail}>Perfil</DropdownMenuItem>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem className="hover:cursor-pointer" onClick={handleClickLogOut}>Cerrar Sesión</DropdownMenuItem>
                                     </DropdownMenuContent>

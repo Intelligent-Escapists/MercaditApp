@@ -9,6 +9,7 @@ import HomePanel from './components/Root/HomePanel';
 import CorreoEnviado from './components/RegisterPanel/CorreoEnviado';
 import CorreoConfirmado from './components/RegisterPanel/CorreoConfirmado';
 import RegistrarProducto from './components/Forms/RegistrarProducto';
+import DetalleUsuario from './components/User/DetalleUsuario';
 import DetallesProducto from './components/Products/DetallesProducto';
 import { UserProvider } from './providers/UserProvider';
 
@@ -24,8 +25,8 @@ function App() {
         <Route path="homeCompra" element={< HomeComprador />} />
         <Route path="homeVenta" element={< HomeVendendor />} />
         <Route path="registra-producto" element={< RegistrarProducto />} />
+        <Route path="detalle-usuario" element={< DetalleUsuario />} />
         <Route path="detalles-producto/:product_id" element={< DetallesProducto />} />
-
       </Route>
     </>
   ));
