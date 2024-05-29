@@ -47,7 +47,6 @@ def consultar_producto_por_id(id_producto):
     return producto
 
 
-
 def consultar_productos_del_vendedor(id_usuario):
     try:
         productos = Producto.query.filter_by(id_usuario=id_usuario).all()
@@ -58,8 +57,9 @@ def consultar_productos_del_vendedor(id_usuario):
         abort(404, description="No hay productos")
     return productos
 
+
 def obtener_imagen_producto(path):
-   
+
     encoded_string = None
     try:
         with open(path, "rb") as file:
@@ -70,6 +70,7 @@ def obtener_imagen_producto(path):
         abort(400, str(e))
 
     return encoded_string
+
 
 def consultar_productos():
     try:
@@ -115,12 +116,26 @@ def existe_producto(id_usuario, nombre_producto):
 def actualizar_producto(
     id_producto, nombre, descripcion, foto, no_stock, precio, categorias
 ):
+    from app import app
+
     producto = producto_existe(id_producto=id_producto)
     if producto:
         try:
+            # Manejo de la imagen
+            if foto:
+                header, encoded = foto.split(",", 1)
+                file_data = base64.b64decode(encoded)
+                file_extension = header.split("/")[1].split(";")[0]
+                file_name = secure_filename(f"{nombre}.{file_extension}")
+                file_path = os.path.join(app.config["UPLOAD_FOLDER"], file_name)
+
+                with open(file_path, "wb") as file:
+                    file.write(file_data)
+
+                producto.foto = file_name
+
             producto.nombre = nombre
             producto.descripcion = descripcion
-            producto.foto = foto
             producto.no_stock = no_stock
             producto.precio = precio
             actualizar_categorias(id_producto=id_producto, categorias=categorias)
