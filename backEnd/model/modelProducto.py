@@ -9,6 +9,7 @@ from cryptoUtils import CryptoUtils as crypto
 from alchemyClasses.Producto import Producto
 from alchemyClasses import db
 from controllers import productoController
+from sqlalchemy import func
 
 
 def agregar_producto(
@@ -149,3 +150,13 @@ def producto_existe(id_producto):
     except Exception as e:
         print(f"Error: {e}")
         abort(400, str(e))
+
+def buscar_producto_por_nombre(nombre_producto):
+    try:
+         productos =db.session.query(Producto.id_producto).filter(Producto.nombre.like(f"%{nombre_producto}%")).all()
+    except Exception as e:
+        print(f"Error: {e}")
+        abort(400, str(e))
+    if productos:
+        return [producto.id_producto for producto in productos]
+

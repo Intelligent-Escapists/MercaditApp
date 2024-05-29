@@ -258,3 +258,10 @@ def agregar_categoria(id_producto, categoria):
 
 def obtener_categorias_de_producto(id_producto):
     return modelCategoria.obtener_categorias_de_producto(id_producto=id_producto)
+
+@producto_blueprint.route("/buscar-producto/", methods=["GET"])
+def buscar_producto_nombre():
+    nombre = request.json["nombre"]
+    productos = modelProducto.buscar_producto_por_nombre(nombre)
+    return jsonify({"id": productos})
+   
