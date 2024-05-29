@@ -10,7 +10,7 @@ export default function Root() {
         <>
             <div className="h-screen">
                 <Nav />
-                <div className="flex gap-4 justify-around  h-[80%]">
+                <div className="flex gap-4 justify-around  min-h-[70%]">
 
                     <Outlet />
 

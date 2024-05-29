@@ -154,5 +154,15 @@ def get_usuario_autenticado():
     )
 
 
+@usuario_blueprint.route("/actualiza-usuario", methods=["POST"])
+def actualiza_usuario():
+
+    id_usuario = request.json["id_usuario"]
+    nombre_usuario = request.json["nombre_usuario"]
+    correo = request.json["correo"]
+    password = request.json["password"]
+    telefono = request.json["telefono"]
+
+
 def existeUsuario(id_usuario):
     return modelUsuario.buscar_usuario_por_id(id_usuario=id_usuario)
