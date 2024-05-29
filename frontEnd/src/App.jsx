@@ -28,7 +28,7 @@ function App() {
         <Route path="homeCompra" element={< HomeComprador />} />
         <Route path="homeVenta" element={< HomeVendendor />} />
         <Route path="registra-producto" element={< RegistrarProducto />} />
-        <Route path="comentarios" element={< Comment />} />
+        <Route path="comentarios/:id" element={< Comment />} />
       </Route>
     </>
   ));
