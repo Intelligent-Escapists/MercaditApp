@@ -53,9 +53,12 @@ def actualizar_calificacion_general(id_producto):
         # Calcular la nueva calificación general
         total_calificaciones = len(lista_calificaciones)
         suma_calificaciones = sum(cal for cal in lista_calificaciones)
-        nueva_calificacion_general = round(
-            suma_calificaciones / (total_calificaciones)
-        )  # Sumar 1 para incluir la nueva calificación
+        if total_calificaciones == 0:
+            nueva_calificacion_general = 0
+        else:
+            nueva_calificacion_general = suma_calificaciones / (
+                total_calificaciones
+            )  # Sumar 1 para incluir la nueva calificación
         try:
             # Actualizar la calificación general del producto
             producto.calificacion = nueva_calificacion_general

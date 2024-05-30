@@ -77,6 +77,7 @@ def consultar_productos():
                     "descripcion": producto.descripcion,
                     "precio": producto.precio,
                     "no_stock": producto.no_stock,
+                    "calificacion": producto.calificacion,
                     "foto": obtener_imagen_producto(producto.foto),
                 }
                 for producto in productos
@@ -172,7 +173,7 @@ def eliminar_producto(id_producto):
 
 @producto_blueprint.route("/obtener-calificacion-producto", methods=["GET"])
 def obtener_calificacion():
-    id_producto = request.json["id_producto"]
+    id_producto = request.args.get("id_producto")
     calificacion = modelCalificar.actualizar_calificacion_general(id_producto)
     return jsonify({"calificacion": calificacion})
 
@@ -294,9 +295,10 @@ def obtener_categorias_de_producto(id_producto):
 def filtrar_producto(categoria):
     categoria=categoria.replace("%20"," ")
     productos= modelProducto.filtrar_categoria(categoria)
+    develop
     if productos is None:
         return jsonify({"error": "No hay productos"}), 409
-    return(
+    return (
         jsonify(
             [
                 {
@@ -313,13 +315,15 @@ def filtrar_producto(categoria):
         200,
     )
 
+
 @producto_blueprint.route("/buscar-producto/<string:nombre>", methods=["GET"])
 def buscar_producto_nombre(nombre):
     nombre=nombre.replace("%20"," ")
+    develop
     productos = modelProducto.buscar_producto_por_nombre(nombre)
     if productos is None:
         return jsonify({"error": "No hay productos"}), 409
-    return(
+    return (
         jsonify(
             [
                 {
