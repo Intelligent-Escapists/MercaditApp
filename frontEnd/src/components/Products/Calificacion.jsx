@@ -101,9 +101,10 @@ export default function Calificacion() {
             {existingRating === null && ( // Renderizar el párrafo si no existe calificación
                 <p className="mt-3">Aun no cuentas con una calificación. ¡Califica el producto ahora!</p>
             )}
-            <p className="mt-3">Calificaste a este producto con {existingRating} estrellas</p>
+            {existingRating && (<p className="mt-3">Calificaste a este producto con {existingRating} estrellas</p>)}
             <Button className="mt-4 mb-3" onClick={handleCalificar}>
-                <span className="text-base">Calificar Producto</span>
+                {existingRating === null ? <span className="text-base">Calificar producto</span> : <span className="text-base">Actualizar calificación</span>}
+
             </Button>
         </div>
     );
