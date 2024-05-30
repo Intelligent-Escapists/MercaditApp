@@ -2,9 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "@/providers/UserProvider";
 import { useEffect, useState, useContext } from "react";
 import { axiosInstance } from "@/services/Axios/axiosClient";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import CommentSection from "./CommentSection";
-import Comment from "./Comment";
 import Calificacion from "./Calificacion";
 import CalificacionGeneral from "./CalificacionGeneral";
 
@@ -169,6 +168,25 @@ export default function DetallesProducto() {
         }
     };
 
+    const handleDelete = async () => {
+        const deletePromise = axiosInstance.delete(`/producto/eliminar-producto/${product_id}`);
+
+        toast.promise(deletePromise, {
+            loading: 'Eliminando producto...',
+            success: 'Producto eliminado exitosamente',
+            error: 'Error al eliminar el producto',
+        });
+
+        try {
+            const response = await deletePromise;
+            if (response.status === 200) {
+                navigate(-1);
+            }
+        } catch (error) {
+            console.error("Error al eliminar el producto:", error);
+        }
+    };
+
     return (
         <div className="flex justify-center items-center gap-9">
             <div>
@@ -190,15 +208,14 @@ export default function DetallesProducto() {
             <Card className="mt-8">
                 <CardHeader className="flex gap-2 grid-cols-2">
                     <CardTitle>{producto.nombre}</CardTitle>
-
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                     <p>{producto.descripcion}</p>
 
                     <Separator />
                     <p className="text-[3.2rem] font-semibold text-indigo-800">{formatCurrency(producto.precio)}</p>
-                    {user.rol === 0 ? (<><p>Tu calificación del producto</p>
-                        <Calificacion /> </>) : <p></p>}
+                    {user.rol === 0 ? (<>
+                        <Calificacion /> </>) : <Dialog><p></p></Dialog>}
 
                     <p >Stock: {producto.no_stock}</p>
                 </CardContent>
@@ -294,8 +311,16 @@ export default function DetallesProducto() {
                                         </DialogFooter>
                                     </form>
                                 </DialogHeader>
+
                             </DialogContent>
+                            <Button
+                                className="font-semibold bg-red-500 hover:bg-red-700"
+                                onClick={handleDelete}
+                            >
+                                Eliminar Producto
+                            </Button>
                         </Dialog>
+
                     )}
                 </CardFooter>
             </Card>
