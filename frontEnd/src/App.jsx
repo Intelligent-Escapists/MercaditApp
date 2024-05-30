@@ -14,7 +14,7 @@ import DetallesProducto from './components/Products/DetallesProducto';
 import { UserProvider } from './providers/UserProvider';
 
 //mario_front
-import Comment from './components/Comments/Comment';
+import Comment from './components/Products/Comment';
 
 
 
