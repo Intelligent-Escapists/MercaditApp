@@ -194,7 +194,7 @@ export default function DetallesProducto() {
                     <p>{producto.descripcion}</p>
                     <Separator />
                     <p className="text-[3.2rem] font-semibold text-indigo-800">{formatCurrency(producto.precio)}</p>
-                    <p>Calificación del producto</p>
+                    <p>Tu calificación del producto</p>
                     <Calificacion />
                 </CardContent>
                 <CardFooter className="flex gap-8">
