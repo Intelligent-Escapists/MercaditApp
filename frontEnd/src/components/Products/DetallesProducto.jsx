@@ -5,7 +5,6 @@ import { axiosInstance } from "@/services/Axios/axiosClient";
 import { toast } from "sonner"
 import CommentSection from "./CommentSection";
 import Comment from "./Comment";
-import { toast } from "sonner";
 import Calificacion from "./Calificacion";
 
 import {
