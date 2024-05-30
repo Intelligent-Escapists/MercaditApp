@@ -206,15 +206,15 @@ def existe_calificacion():
 
 @producto_blueprint.route("/obten-calificacion", methods=["GET"])
 def obten_calificacion():
-    id_producto = request.json["id_producto"]
-    id_usuario = request.json["id_usuario"]
+    id_producto = request.args.get("id_producto")
+    id_usuario = request.args.get("id_usuario")
     calificacion = modelCalificar.existe_calificacion(
         id_producto=id_producto, id_usuario=id_usuario
     )
     if calificacion:
         return jsonify({"calificacion": calificacion.calificacion})
     else:
-        return jsonify({"error": "No existe calificacion"})
+        return jsonify({"calificacion": "No existe calificacion"})
 
 
 @producto_blueprint.route("/actualizar-producto", methods=["PUT"])
