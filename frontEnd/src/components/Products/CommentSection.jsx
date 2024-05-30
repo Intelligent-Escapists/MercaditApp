@@ -10,7 +10,7 @@ const CommentSection = ({ entityId, userId }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/comentario/ver-comentarios/${entityId}`);
+        const response = await axios.get(`http://localhost:5000/comentario/ver-comentarios-nombre/${entityId}`);
         setComments(response.data);
       } catch (error) {
         console.error('Error fetching comments:', error);
@@ -44,7 +44,7 @@ const CommentSection = ({ entityId, userId }) => {
       <div className="comments-list">
         {comments.map((comment) => (
           <div key={comment.id_comentario} className="comment">
-            <p>{comment.comentario}</p>
+            <p><strong>{comment.nombre_usuario}</strong>: {comment.comentario}</p>
           </div>
         ))}
       </div>

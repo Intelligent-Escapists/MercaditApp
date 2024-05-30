@@ -7,6 +7,8 @@ class Comentario(db.Model):
     id_producto = Column(Integer, ForeignKey('producto.id_producto'), primary_key=True)
     id_usuario = Column(Integer, ForeignKey('usuario.id_usuario'))
     comentario = Column(Text, nullable=False)
+    usuario = db.relationship('Usuario', backref=db.backref('comentarios', lazy=True))
+
 
     def __init__(self, id_producto, id_usuario, comentario):
         self.id_producto = id_producto
