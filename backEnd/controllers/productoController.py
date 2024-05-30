@@ -290,9 +290,9 @@ def agregar_categoria(id_producto, categoria):
 def obtener_categorias_de_producto(id_producto):
     return modelCategoria.obtener_categorias_de_producto(id_producto=id_producto)
 
-@producto_blueprint.route("/filtrar-producto", methods=["GET"])
-def filtrar_producto():
-    categoria = request.json["categoria"]
+@producto_blueprint.route("/filtrar-producto/<string:categoria>", methods=["GET"])
+def filtrar_producto(categoria):
+    categoria=categoria.replace("%20"," ")
     productos= modelProducto.filtrar_categoria(categoria)
     if productos is None:
         return jsonify({"error": "No hay productos"}), 409
@@ -313,9 +313,9 @@ def filtrar_producto():
         200,
     )
 
-@producto_blueprint.route("/buscar-producto/", methods=["GET"])
-def buscar_producto_nombre():
-    nombre = request.json["nombre"]
+@producto_blueprint.route("/buscar-producto/<string:nombre>", methods=["GET"])
+def buscar_producto_nombre(nombre):
+    nombre=nombre.replace("%20"," ")
     productos = modelProducto.buscar_producto_por_nombre(nombre)
     if productos is None:
         return jsonify({"error": "No hay productos"}), 409
