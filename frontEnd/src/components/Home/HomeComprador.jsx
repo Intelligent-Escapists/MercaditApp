@@ -13,6 +13,7 @@ import {
 
 import { toast } from "sonner";
 import CalificacionGeneral from "../Products/CalificacionGeneral";
+import { Input } from "@/components/ui/input";
 
 import { axiosInstance } from "@/services/Axios/axiosClient";
 import CartIcon from "../Icons/CartIcon";
@@ -74,9 +75,9 @@ export default function HomeComprador() {
     return (
         <div className="flex justify-center items-center w-full py-10 flex-col">
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-8">Bienvenido a MercaditApp</h1>
-            <Select onValueChange={selectedcategory}>
                 <SelectTrigger className="w-[180px] mb-8">
-                    <SelectValue placeholder="Filtra por Categorias" />
+
+                    <SelectValue placeholder="Filtrar por Categorias" />
                 </SelectTrigger>
                 <SelectContent>
                     {categorias.map((cat) => (
