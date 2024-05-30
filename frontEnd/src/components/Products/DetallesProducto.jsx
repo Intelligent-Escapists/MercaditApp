@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "@/providers/UserProvider";
-
 import { useEffect, useState, useContext } from "react";
 import { axiosInstance } from "@/services/Axios/axiosClient";
 import { toast } from "sonner"
 import CommentSection from "./CommentSection";
 import Comment from "./Comment";
+import { toast } from "sonner";
+import Calificacion from "./Calificacion";
 
 import {
     Card,
@@ -13,7 +14,7 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
 import {
     Breadcrumb,
@@ -22,7 +23,7 @@ import {
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+} from "@/components/ui/breadcrumb";
 
 import {
     Dialog,
@@ -33,7 +34,7 @@ import {
     DialogTitle,
     DialogTrigger,
     DialogFooter,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 import {
     Select,
@@ -41,8 +42,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
-
+} from "@/components/ui/select";
 
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -53,11 +53,9 @@ import { Textarea } from "@/components/ui/textarea";
 import useInput from "../Hooks/useInput";
 import { isNumberValid } from "../Hooks/Validators/isNumberValid";
 
-
 import CartIcon from "../Icons/CartIcon";
 import Selector from "./Selector";
 import EditIcon from "../Icons/EditIcon";
-
 
 export default function DetallesProducto() {
     const navigate = useNavigate();
@@ -79,7 +77,6 @@ export default function DetallesProducto() {
         axiosInstance.get(`producto/obtener-producto/${product_id}`)
             .then((res) => {
                 setProducto(res.data);
-                console.log(producto)
                 setterTodo(res.data);
             })
             .catch((err) => { console.log(err.message) });
@@ -90,7 +87,7 @@ export default function DetallesProducto() {
             })
             .catch((err) => { toast.error(err || "Error al cargar las categorías"); });
 
-    }, [product_id])
+    }, [product_id]);
 
     const setterTodo = (producto) => {
         nombreInput.setValue(producto.nombre);
@@ -99,7 +96,7 @@ export default function DetallesProducto() {
         cantidadInput.setValue(producto.no_stock);
         setCategoriaInput(producto.categoria);
         setFoto(producto.foto);
-    }
+    };
 
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
@@ -113,11 +110,11 @@ export default function DetallesProducto() {
             }
         }
     };
+
     const handleCategoriaChange = (value) => {
         setCategoriaInput(value);
-    }
+    };
 
-    // Función para convertir archivo a base64
     const convertToBase64 = (file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -127,7 +124,6 @@ export default function DetallesProducto() {
         });
     };
 
-    // Si producto es null, puedes mostrar un mensaje de carga o un placeholder
     if (!producto) {
         return <div className="flex justify-center items-center">Loading...</div>;
     }
@@ -138,21 +134,21 @@ export default function DetallesProducto() {
 
     const goBackHandler = () => {
         navigate(-1);
-    }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const productToSend = {
+            id_producto: parseInt(product_id),  // Asegúrate de incluir id_producto
             id_usuario: user.id_usuario,
             nombre: nombreInput.value,
             descripcion: descripcionInput.value,
             precio: parseInt(precioInput.value),
-            cantidad: parseInt(cantidadInput.value),
-            categoria: categoriaInput,
+            no_stock: parseInt(cantidadInput.value),
+            categoria: [categoriaInput],
             foto: foto,
         };
-
         console.log(productToSend);
 
         const productPromise = axiosInstance.put('/producto/actualizar-producto', productToSend);
@@ -173,11 +169,10 @@ export default function DetallesProducto() {
         }
     };
 
-
     return (
         <div className="flex justify-center items-center gap-9 ">
-            <div >
-                <Breadcrumb className="py-4 ">
+            <div>
+                <Breadcrumb className="py-4">
                     <BreadcrumbList>
                         <BreadcrumbItem>
                             <BreadcrumbLink className="text-lg" href="#" onClick={goBackHandler}>Home</BreadcrumbLink>
@@ -188,14 +183,10 @@ export default function DetallesProducto() {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <Card className=" p-3 flex justify-center items-center h-[500px] w-[500px]">
-
+                <Card className="p-3 flex justify-center items-center h-[500px] w-[500px]">
                     <img src={producto.foto} alt={producto.nombre} className="h-[350px] w-[350px]" />
-
                 </Card>
-
             </div>
-
             <Card className="mt-8">
                 <CardHeader>
                     <CardTitle>{producto.nombre}</CardTitle>
@@ -204,6 +195,8 @@ export default function DetallesProducto() {
                     <p>{producto.descripcion}</p>
                     <Separator />
                     <p className="text-[3.2rem] font-semibold text-indigo-800">{formatCurrency(producto.precio)}</p>
+                    <p>Calificación del producto</p>
+                    <Calificacion />
                 </CardContent>
                 <CardFooter className="flex gap-8">
                     {user.rol === 0 ? (
@@ -225,10 +218,9 @@ export default function DetallesProducto() {
                             <DialogContent>
                                 <DialogHeader>
                                     <DialogTitle>Editar producto</DialogTitle>
-                                    <DialogDescription >
+                                    <DialogDescription>
                                         Asegúrate de que los datos sean correctos antes de guardar los cambios.
                                     </DialogDescription>
-
                                     <form onSubmit={handleSubmit}>
                                         <div className="grid w-full gap-6 mt-4">
                                             <div className="flex flex-col items-start space-y-2">
@@ -252,7 +244,6 @@ export default function DetallesProducto() {
                                                     required
                                                 />
                                             </div>
-
                                             <div className="flex flex-col items-start space-y-2">
                                                 <Label htmlFor='stock'>Stock</Label>
                                                 <Input
@@ -277,7 +268,7 @@ export default function DetallesProducto() {
                                             </div>
                                             <div className="flex flex-col items-start space-y-2">
                                                 <Label htmlFor='categoria'>Categoría</Label>
-                                                <Select onValueChange={handleCategoriaChange} value={categoriaInput[0]}>
+                                                <Select onValueChange={handleCategoriaChange} value={categoriaInput}>
                                                     <SelectTrigger className="w-full">
                                                         <SelectValue placeholder="Selecciona una categoría" />
                                                     </SelectTrigger>
@@ -296,11 +287,10 @@ export default function DetallesProducto() {
                                                 <Button type="submit" className="font-semibold mt-4">Guardar Cambios</Button>
                                             </DialogClose>
                                         </DialogFooter>
-                                    </form >
+                                    </form>
                                 </DialogHeader>
                             </DialogContent>
                         </Dialog>
-
                     )}
                 </CardFooter>
             </Card>
@@ -310,8 +300,6 @@ export default function DetallesProducto() {
                 <CommentSection entityId={product_id} userId={user?.id_usuario} />
             </div>
 
-
         </div>
     );
-
 }
