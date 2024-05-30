@@ -1,11 +1,15 @@
 // src/components/Comments/CommentSection.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import './CommentSection.css';
+import { UserContext } from '@/providers/UserProvider';
+
 
 const CommentSection = ({ entityId, userId }) => {
   const [comments, setComments] = useState([]);
   const [content, setContent] = useState('');
+  const { user } = useContext(UserContext);
+
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -48,16 +52,17 @@ const CommentSection = ({ entityId, userId }) => {
           </div>
         ))}
       </div>
-      <div className="comment-form">
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Escribe un comentario"
-        />
-        <button onClick={handleAddComment}>Agregar comentario</button>
-      </div>
+      {user?.rol === 0 && (
+        <div className="comment-form">
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Escribe un comentario"
+          />
+          <button onClick={handleAddComment}>Agregar comentario</button>
+        </div>
+      )}
     </div>
   );
 };
-
 export default CommentSection;
