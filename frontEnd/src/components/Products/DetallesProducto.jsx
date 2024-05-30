@@ -55,6 +55,7 @@ import { isNumberValid } from "../Hooks/Validators/isNumberValid";
 import CartIcon from "../Icons/CartIcon";
 import Selector from "./Selector";
 import EditIcon from "../Icons/EditIcon";
+import TrashIcon from "../Icons/TrashIcon";
 
 export default function DetallesProducto() {
     const navigate = useNavigate();
@@ -317,7 +318,8 @@ export default function DetallesProducto() {
                                 className="font-semibold bg-red-500 hover:bg-red-700"
                                 onClick={handleDelete}
                             >
-                                Eliminar Producto
+                                <TrashIcon className="h-5 w-5 mr-3" />
+                                <span className="ml-1">Eliminar producto</span>
                             </Button>
                         </Dialog>
 
