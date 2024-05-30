@@ -26,14 +26,17 @@ export default function HomeComprador() {
     const [categorias, setCategorias] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    const obtenerProductos = () => {
         axiosInstance.get('producto/productos')
             .then((res) => {
                 setProductos(res.data);
             })
             .catch((err) => { toast(err) })
             .finally(() => setLoading(false));
+    }
 
+    useEffect(() => {
+        obtenerProductos();
         // Obtener las categorías desde la API
         axiosInstance.get('/producto/obtener-todas-las-categorias-existentes')
             .then((res) => {
@@ -59,15 +62,19 @@ export default function HomeComprador() {
         navigate(`/detalles-producto/${product_id}`)
     }
 
+    const selectedcategory = (e) => {
+        let categoria = encodeURIComponent(e);
+        axiosInstance.get(`/producto/filtrar-producto/${categoria}`)
+            .then((res) => {
+                setProductos(res.data);
+            })
+            .catch((err) => { toast.error("Error al cargar los productos") })
+            .finally(() => setLoading(false));
+    }
+
     return (
         <div className="flex justify-center items-center w-full py-10 flex-col">
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-8">Bienvenido a MercaditApp</h1>
-
-            <Select>
-                <div>
-                    <Input className="w-[280px] mb-3" type="text" placeholder="Buscar" />
-                    <Button className="w-[280px] mb-3"><span>Buscar</span></Button>
-                </div>
                 <SelectTrigger className="w-[180px] mb-8">
 
                     <SelectValue placeholder="Filtrar por Categorias" />
