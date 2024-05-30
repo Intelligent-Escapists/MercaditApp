@@ -313,9 +313,9 @@ def filtrar_producto(categoria):
         200,
     )
 
-@producto_blueprint.route("/buscar-producto/", methods=["GET"])
-def buscar_producto_nombre():
-    nombre = request.json["nombre"]
+@producto_blueprint.route("/buscar-producto/<string:nombre>", methods=["GET"])
+def buscar_producto_nombre(nombre):
+    nombre=nombre.replace("%20"," ")
     productos = modelProducto.buscar_producto_por_nombre(nombre)
     if productos is None:
         return jsonify({"error": "No hay productos"}), 409
