@@ -62,14 +62,3 @@ def eliminar_todas_las_categorias_de_un_producto(id_producto):
         print("No pude eliminar", producto, id_producto)
         return False
     
-def filtrar_categoria(categoria):
-    try:
-        categorias = db.session.query(Categoria.id_producto).filter(Categoria.categoria == categoria).all()
-    except Exception as e:
-        print(f"Error: {e}")
-        abort(400, str(e))
-    if categorias:
-        return [categoria.id_producto for categoria in categorias]
-    else:
-        print("No hay productos que coincidan")
-        return False

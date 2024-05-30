@@ -293,11 +293,45 @@ def obtener_categorias_de_producto(id_producto):
 @producto_blueprint.route("/filtrar-producto", methods=["GET"])
 def filtrar_producto():
     categoria = request.json["categoria"]
-    productos= modelCategoria.filtrar_categoria(categoria)
-    return jsonify({"productos": productos})
+    productos= modelProducto.filtrar_categoria(categoria)
+    if productos is None:
+        return jsonify({"error": "No hay productos"}), 409
+    return(
+        jsonify(
+            [
+                {
+                    "id_producto": producto.id_producto,
+                    "nombre": producto.nombre,
+                    "descripcion": producto.descripcion,
+                    "precio": producto.precio,
+                    "no_stock": producto.no_stock,
+                    "foto": obtener_imagen_producto(producto.foto),
+                }
+                for producto in productos
+            ]
+        ),
+        200,
+    )
 
 @producto_blueprint.route("/buscar-producto/", methods=["GET"])
 def buscar_producto_nombre():
     nombre = request.json["nombre"]
     productos = modelProducto.buscar_producto_por_nombre(nombre)
-    return jsonify({"id": productos})
+    if productos is None:
+        return jsonify({"error": "No hay productos"}), 409
+    return(
+        jsonify(
+            [
+                {
+                    "id_producto": producto.id_producto,
+                    "nombre": producto.nombre,
+                    "descripcion": producto.descripcion,
+                    "precio": producto.precio,
+                    "no_stock": producto.no_stock,
+                    "foto": obtener_imagen_producto(producto.foto),
+                }
+                for producto in productos
+            ]
+        ),
+        200,
+    )
