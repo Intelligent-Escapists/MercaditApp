@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import CommentSection from "./CommentSection";
 import Comment from "./Comment";
 import Calificacion from "./Calificacion";
+import CalificacionGeneral from "./CalificacionGeneral";
 
 import {
     Card,
@@ -161,7 +162,7 @@ export default function DetallesProducto() {
         try {
             const response = await productPromise;
             if (response.status === 201) {
-                toast.success("Producto registrado exitosamente");
+
             }
         } catch (error) {
             console.error("Error al registrar el producto:", error);
@@ -169,7 +170,7 @@ export default function DetallesProducto() {
     };
 
     return (
-        <div className="flex justify-center items-center gap-9 ">
+        <div className="flex justify-center items-center gap-9">
             <div>
                 <Breadcrumb className="py-4">
                     <BreadcrumbList>
@@ -187,17 +188,22 @@ export default function DetallesProducto() {
                 </Card>
             </div>
             <Card className="mt-8">
-                <CardHeader>
+                <CardHeader className="flex gap-2 grid-cols-2">
                     <CardTitle>{producto.nombre}</CardTitle>
+
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
                     <p>{producto.descripcion}</p>
+
                     <Separator />
                     <p className="text-[3.2rem] font-semibold text-indigo-800">{formatCurrency(producto.precio)}</p>
-                    <p>Calificación del producto</p>
-                    <Calificacion />
+                    {user.rol === 0 ? (<><p>Tu calificación del producto</p>
+                        <Calificacion /> </>) : <p></p>}
+
+                    <p >Stock: {producto.no_stock}</p>
                 </CardContent>
                 <CardFooter className="flex gap-8">
+
                     {user.rol === 0 ? (
                         <>
                             <Selector />
@@ -294,8 +300,9 @@ export default function DetallesProducto() {
                 </CardFooter>
             </Card>
 
-                    {/* Agregar sección de comentarios */}
+            {/* Agregar sección de comentarios */}
             <div className="mt-8 w-full max-w-xl">
+                <p className="text-sm">La calificacion promedio es: <CalificacionGeneral product_id={product_id} /></p>
                 <CommentSection entityId={product_id} userId={user?.id_usuario} />
             </div>
 

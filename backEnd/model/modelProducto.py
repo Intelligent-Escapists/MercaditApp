@@ -7,6 +7,7 @@ from flask.json import jsonify
 from cryptoUtils import CryptoUtils as crypto
 
 from alchemyClasses.Producto import Producto
+from alchemyClasses.Categoria import Categoria
 from alchemyClasses import db
 from controllers import productoController
 
@@ -180,9 +181,21 @@ def producto_existe(id_producto):
 
 def buscar_producto_por_nombre(nombre_producto):
     try:
-         productos =db.session.query(Producto.id_producto).filter(Producto.nombre.like(f"%{nombre_producto}%")).all()
+         productos =Producto.query.filter(Producto.nombre.like(f"%{nombre_producto}%")).all()
     except Exception as e:
         print(f"Error: {e}")
         abort(400, str(e))
     if productos:
-        return [producto.id_producto for producto in productos]
+        return productos
+
+def filtrar_categoria(categoria):
+    try:
+        productos = Producto.query.join(Categoria, Producto.id_producto == Categoria.id_producto).filter(Categoria.categoria == categoria).all()
+    except Exception as e:
+        print(f"Error: {e}")
+        abort(400, str(e))
+    if productos:
+        return productos
+    else:
+        print("No hay productos que coincidan")
+        return False
