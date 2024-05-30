@@ -24,7 +24,6 @@ export default function HomeComprador() {
     const [productos, setProductos] = useState([]);
     const [categorias, setCategorias] = useState([]);
     const [loading, setLoading] = useState(true);
-
     const obtenerProductos = () => {
         axiosInstance.get('producto/productos')
             .then((res) => {
@@ -62,12 +61,17 @@ export default function HomeComprador() {
     }
 
     const selectedcategory = (e) => {
+        if (e === "Todas") {
+            obtenerProductos();
+            return;
+        }
         let categoria = encodeURIComponent(e);
         axiosInstance.get(`/producto/filtrar-producto/${categoria}`)
             .then((res) => {
                 setProductos(res.data);
             })
-            .catch((err) => { toast.error("Error al cargar los productos") })
+            .catch((err) => { toast.error("Error al cargar los productos"),
+        obtenerProductos() })
             .finally(() => setLoading(false));
     }
 
@@ -79,8 +83,12 @@ export default function HomeComprador() {
                     <SelectValue placeholder="Filtra por Categorias" />
                 </SelectTrigger>
                 <SelectContent>
+                <SelectItem value="Todas">
+            Todas las categorías
+            </SelectItem>
                     {categorias.map((cat) => (
                         <SelectItem key={cat} value={cat}>
+                            
                             {cat}
                         </SelectItem>
                     ))}
