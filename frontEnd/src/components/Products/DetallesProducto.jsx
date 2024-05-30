@@ -2,6 +2,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "@/providers/UserProvider";
 import { useEffect, useState, useContext } from "react";
 import { axiosInstance } from "@/services/Axios/axiosClient";
+import { toast } from "sonner"
+import CommentSection from "./CommentSection";
+import Comment from "./Comment";
 import { toast } from "sonner";
 import Calificacion from "./Calificacion";
 
@@ -291,6 +294,12 @@ export default function DetallesProducto() {
                     )}
                 </CardFooter>
             </Card>
+
+                    {/* Agregar sección de comentarios */}
+            <div className="mt-8 w-full max-w-xl">
+                <CommentSection entityId={product_id} userId={user?.id_usuario} />
+            </div>
+
         </div>
     );
 }

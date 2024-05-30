@@ -13,6 +13,11 @@ import DetalleUsuario from './components/User/DetalleUsuario';
 import DetallesProducto from './components/Products/DetallesProducto';
 import { UserProvider } from './providers/UserProvider';
 
+//mario_front
+import Comment from './components/Products/Comment';
+
+
+
 function App() {
 
   const router = createBrowserRouter(createRoutesFromElements(
@@ -27,6 +32,7 @@ function App() {
         <Route path="registra-producto" element={< RegistrarProducto />} />
         <Route path="detalle-usuario" element={< DetalleUsuario />} />
         <Route path="detalles-producto/:product_id" element={< DetallesProducto />} />
+        <Route path="comentarios/:id" element={< Comment />} />
       </Route>
     </>
   ));

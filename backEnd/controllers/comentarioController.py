@@ -25,10 +25,10 @@ def crear_comentario():
         }), 201
     except Exception as e:
         return jsonify({"error 2": str(e)}), 400
-    
-@comentario_blueprint.route('/ver-comentarios', methods=['GET'])
-def ver_comentarios():
-    comentarios = model.ver_comentarios()
+
+@comentario_blueprint.route('/ver-comentarios/<int:product_id>', methods=['GET'])
+def ver_comentarios(product_id):
+    comentarios = model.ver_comentarios_por_producto(product_id)
     if comentarios is None:
         return jsonify({"error": "No hay comentarios"}), 404
     return jsonify([{

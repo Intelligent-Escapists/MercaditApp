@@ -38,6 +38,14 @@ def ver_comentarios():
         return None
     return comentarios
 
+#front mario
+def ver_comentarios_por_producto(product_id):
+    comentarios = Comentario.query.filter_by(id_producto=product_id).all()
+    if not comentarios:
+        return None
+    return comentarios
+
+
 def ver_comentario_por_id(id_comentario):
     comentario = Comentario.query.filter_by(id_comentario=id_comentario).first()
     if comentario is None:
