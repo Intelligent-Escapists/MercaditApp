@@ -26,17 +26,22 @@ def crear_comentario():
     except Exception as e:
         return jsonify({"error 2": str(e)}), 400
 
-@comentario_blueprint.route('/ver-comentarios/<int:product_id>', methods=['GET'])
+
+#front mario
+@comentario_blueprint.route('/ver-comentarios-nombre/<int:product_id>', methods=['GET'])
 def ver_comentarios(product_id):
-    comentarios = model.ver_comentarios_por_producto(product_id)
-    if comentarios is None:
+    comentarios = model.ver_comentarios_y_nombre_usuario_por_producto(product_id)
+    if not comentarios:
         return jsonify({"error": "No hay comentarios"}), 404
+    
     return jsonify([{
-        'id_comentario': comentario.id_comentario,
-        'id_producto': comentario.id_producto,
-        'id_usuario': comentario.id_usuario,
-        'comentario': comentario.comentario
+        'id_comentario': comentario.Comentario.id_comentario,
+        'id_producto': comentario.Comentario.id_producto,
+        'id_usuario': comentario.Comentario.id_usuario,
+        'comentario': comentario.Comentario.comentario,
+        'nombre_usuario': comentario.nombre_usuario
     } for comentario in comentarios]), 200
+
 
 @comentario_blueprint.route('/ver-comentario/<int:id_comentario>', methods=['GET'])
 def ver_comentario(id_comentario):

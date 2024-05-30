@@ -3,6 +3,7 @@ from flask.json import jsonify
 from cryptoUtils import CryptoUtils as crypto
 
 from alchemyClasses.Comentario import Comentario
+from alchemyClasses.Usuario import Usuario
 from alchemyClasses import db
 
 def crear_comentario(id_producto, id_usuario, comentario):
@@ -44,6 +45,11 @@ def ver_comentarios_por_producto(product_id):
     if not comentarios:
         return None
     return comentarios
+
+#front mario
+def ver_comentarios_y_nombre_usuario_por_producto(product_id):
+    return db.session.query(Comentario, Usuario.nombre_usuario).join(Usuario, Usuario.id_usuario == Comentario.id_usuario).filter(Comentario.id_producto == product_id).all()
+
 
 
 def ver_comentario_por_id(id_comentario):
