@@ -19,6 +19,7 @@ export default function BarraBusqueda() {
 
     const performSearch = () => {
         // Aquí puedes realizar la acción deseada, como redirigir a una página de resultados de búsqueda
+        if (search.trim() === "") return
         console.log('Buscando:', search);
         navigate(`busqueda/${search}`)
         setSearch("")
