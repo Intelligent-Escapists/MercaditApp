@@ -16,11 +16,14 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import TrashIcon from "../Icons/TrashIcon";
+
 
 export default function HomeVendendor() {
     const { user } = useContext(UserContext);
     const [productos, setProductos] = useState([]);
     const navigate = useNavigate();
+    const [eliminado, setEliminado] = useState(false);
 
     useEffect(() => {
         axiosInstance.get(`producto/productos/${user.id_usuario}`)
@@ -28,7 +31,7 @@ export default function HomeVendendor() {
                 setProductos(res.data);
             })
             .catch((err) => { toast(err) })
-    }, []);
+    }, [eliminado]);
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('es-US', { style: 'currency', currency: 'USD' }).format(amount);
@@ -50,6 +53,34 @@ export default function HomeVendendor() {
         navigate(`/detalles-producto/${id_producto}`);
     };
 
+    const toastConfirm = (product_id) => {
+        toast.warning('Estas seguro de eliminar el producto', {
+            action: {
+                label: 'Eliminar',
+                onClick: () => { handleDelete(product_id) },
+            },
+        });
+    }
+    const handleDelete = async (product_id) => {
+        const deletePromise = axiosInstance.delete(`/producto/eliminar-producto/${product_id}`);
+
+        toast.promise(deletePromise, {
+            loading: 'Eliminando producto...',
+            success: 'Producto eliminado exitosamente',
+            error: 'Error al eliminar el producto',
+        });
+
+        try {
+            const response = await deletePromise;
+            if (response.status === 200) {
+                setEliminado(true);
+            }
+        } catch (error) {
+            console.error("Error al eliminar el producto:", error);
+        }
+    };
+
+
     return (
         <div className="flex justify-center items-center">
             {productos.length === 0 ? (
@@ -61,6 +92,7 @@ export default function HomeVendendor() {
                 </>
             ) : (
                 <div className="w-full">
+                    <Button className="mb-10 " onClick={handleUploadProduct}>Agregar Producto</Button>
                     <Table className="mt-10 mb-10">
                         <TableCaption>Tus productos.</TableCaption>
                         <TableHeader>
@@ -81,14 +113,20 @@ export default function HomeVendendor() {
                                     <TableCell>{producto.descripcion.length > 50 ? producto.descripcion.substring(0, 50) + '...' : producto.descripcion}</TableCell>
                                     <TableCell>{producto.no_stock}</TableCell>
                                     <TableCell>{formatCurrency(producto.precio)}</TableCell>
-                                    <TableCell>
+                                    <TableCell className="flex gap-4">
                                         <Button onClick={() => handleVerDetallesButton(producto.id_producto)}>Ver detalles</Button>
+                                        <Button
+                                            className="font-semibold bg-red-500 hover:bg-red-700"
+                                            onClick={() => { toastConfirm(producto.id_producto) }}
+                                        >
+                                            <TrashIcon className="h-5 w-5 mr-3" />
+                                        </Button>
                                     </TableCell>
+
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
-                    <Button className="mb-10 " onClick={handleUploadProduct}>Agregar Producto</Button>
                 </div>
             )}
         </div>

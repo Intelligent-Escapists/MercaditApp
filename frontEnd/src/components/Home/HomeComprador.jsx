@@ -87,8 +87,10 @@ export default function HomeComprador() {
             .then((res) => {
                 setProductosFiltrados(res.data);
             })
-            .catch((err) => { toast.error("Error al cargar los productos"),
-        obtenerProductos() })
+            .catch((err) => {
+                toast.error("Error al cargar los productos"),
+                    obtenerProductos()
+            })
             .finally(() => setLoading(false));
     }
     const handleSearch=(e)=>{
@@ -100,18 +102,18 @@ export default function HomeComprador() {
         <div className="flex justify-center items-center w-full py-10 flex-col">
             
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-8">Bienvenido a MercaditApp</h1>
-            <div className="flex w-full max-w-sm items-center space-x-2">
-            <Select onValueChange={selectedcategory}>
-                <SelectTrigger className="w-[180px] mb-8">
+            <Select onValueChange={selectedcategory} >
+                <SelectTrigger className=" mb-8 text-base w-[300px]">
+
                     <SelectValue placeholder="Filtra por Categorias" />
                 </SelectTrigger>
                 <SelectContent>
-                <SelectItem value="Todas">
-            Todas las categorías
-            </SelectItem>
+                    <SelectItem value="Todas" className="hover:cursor-pointer">
+                        Todas las categorías
+                    </SelectItem>
                     {categorias.map((cat) => (
-                        <SelectItem key={cat} value={cat}>
-                            
+                        <SelectItem key={cat} value={cat} className=" hover:cursor-pointer">
+
                             {cat}
                         </SelectItem>
                     ))}
@@ -142,6 +144,6 @@ export default function HomeComprador() {
                     </Card>
                 ))}
             </div>
-        </div>
+        </div >
     );
 }

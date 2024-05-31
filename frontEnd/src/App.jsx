@@ -13,6 +13,7 @@ import RegistrarProducto from './components/Forms/RegistrarProducto';
 import DetalleUsuario from './components/User/DetalleUsuario';
 import DetallesProducto from './components/Products/DetallesProducto';
 import UserProfile from './components/UserProfile/UserProfile';
+import BusquedaProductos from './components/Products/BusquedaProductos';
 
 //mario_front
 import Comment from './components/Products/Comment';
@@ -35,6 +36,7 @@ function App() {
         <Route path="detalles-producto/:product_id" element={< DetallesProducto />} />
         <Route path="comentarios/:id" element={< Comment />} />
         <Route path="perfil" element={< UserProfile />} />
+        <Route path="busqueda/:nombre_producto" element={< BusquedaProductos />} />
       </Route>
     </>
   ));

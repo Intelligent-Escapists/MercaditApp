@@ -24,6 +24,7 @@ import {
 import { Button } from "../ui/button";
 import UserIcon from "../Icons/UserIcon";
 import CartIcon from "../Icons/CartIcon";
+import BarraBusqueda from "./BarraBusqueda";
 
 
 export default function Nav() {
@@ -82,12 +83,16 @@ export default function Nav() {
                                 </NavigationMenuLink>
                             </div>
                         </NavigationMenuItem>
+                    </div>
+                    {user && loged && (
+                        <BarraBusqueda />
+                    )}
                     </div>        
                     {user && loged ? (
                         <div className="flex gap-7">
                             {user.rol === 0 && (
                                 <NavigationMenuItem>
-                                    <Link to="/carrito">
+                                    <Link to="#">
                                         <CartIcon className="w-10 h-10 text-white" />
                                     </Link>
                                 </NavigationMenuItem>

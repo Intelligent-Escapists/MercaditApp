@@ -2,6 +2,7 @@ import Login from "@/components/Forms/Login";
 
 export default function HomePanel() {
 
+
     return (
 
         <div className="flex items-center justify-between w-full">
