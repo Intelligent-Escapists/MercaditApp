@@ -9,6 +9,7 @@ export function UserProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loged, setLoged] = useState(false);
     const [register, setRegister] = useState(false);
+    const [searched, setSearched] = useState('');
 
     useEffect(() => {
         axiosInstance.get('/usuario/@usuario')
@@ -70,7 +71,7 @@ export function UserProvider({ children }) {
     };
 
     return (
-        <UserContext.Provider value={{ user, login, logout, register, toggleRegister, loged, actualizarUsuario }}>
+        <UserContext.Provider value={{ user, login, logout, register, toggleRegister, loged, actualizarUsuario, setSearched, searched }}>
             {children}
         </UserContext.Provider>
     )

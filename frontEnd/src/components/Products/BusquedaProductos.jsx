@@ -24,14 +24,14 @@ export default function BusquedaProductos() {
 
 
     const { nombre_producto } = useParams();
-    const { user } = useContext(UserContext);  // Obtener el usuario del contexto
+    const { searched } = useContext(UserContext);  // Obtener el usuario del contexto
     const navigate = useNavigate();
     const [productos, setProductos] = useState([]);
     const [errorBusqueda, setErrorBusqueda] = useState(false);
 
 
     const goBackHandler = () => {
-        navigate(-1);
+        navigate('/homeCompra');
     };
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export default function BusquedaProductos() {
                 console.log(err.response.data);
                 setErrorBusqueda(true);
             })
-    }, [errorBusqueda]);
+    }, [errorBusqueda, searched]);
 
     if (errorBusqueda) {
         return (

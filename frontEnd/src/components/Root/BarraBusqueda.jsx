@@ -4,12 +4,14 @@
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useState, useContext } from "react"
 import { useNavigate } from "react-router-dom"
+import { UserContext } from "@/providers/UserProvider"
 
 export default function BarraBusqueda() {
     const [search, setSearch] = useState("")
     const navigate = useNavigate()
+    const { setSearched, searched } = useContext(UserContext)
 
     const searchOnChange = (e) => {
         setSearch(e.target.value)
@@ -20,6 +22,7 @@ export default function BarraBusqueda() {
         console.log('Buscando:', search);
         navigate(`busqueda/${search}`)
         setSearch("")
+        setSearched(!searched)
     };
 
     const handleKeyDown = (e) => {

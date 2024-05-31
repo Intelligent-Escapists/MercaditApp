@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import CommentSection from "./CommentSection";
 import Calificacion from "./Calificacion";
 import CalificacionGeneral from "./CalificacionGeneral";
+import InfoVendedor from "./InfoVendedor";
 
 import {
     Card,
@@ -62,6 +63,7 @@ export default function DetallesProducto() {
     const { product_id } = useParams();
     const [producto, setProducto] = useState(null);
     const [categorias, setCategorias] = useState([]);
+    const [actualizado, setActualizado] = useState(false);
 
     const nombreInput = useInput('', { errorMsg: 'Nombre invalido' });
     const descripcionInput = useInput('', { errorMsg: 'Descripción invalida' });
@@ -77,6 +79,7 @@ export default function DetallesProducto() {
             .then((res) => {
                 setProducto(res.data);
                 setterTodo(res.data);
+                console.log(res.data);
             })
             .catch((err) => { console.log(err.message) });
 
@@ -86,14 +89,14 @@ export default function DetallesProducto() {
             })
             .catch((err) => { toast.error(err || "Error al cargar las categorías"); });
 
-    }, [product_id]);
+    }, [product_id, actualizado]);
 
     const setterTodo = (producto) => {
         nombreInput.setValue(producto.nombre);
         descripcionInput.setValue(producto.descripcion);
         precioInput.setValue(producto.precio);
         cantidadInput.setValue(producto.no_stock);
-        setCategoriaInput(producto.categoria);
+        setCategoriaInput(producto.categoria[0]);
         setFoto(producto.foto);
     };
 
@@ -145,25 +148,55 @@ export default function DetallesProducto() {
             descripcion: descripcionInput.value,
             precio: parseInt(precioInput.value),
             no_stock: parseInt(cantidadInput.value),
-            categoria: [categoriaInput],
+            categorias: [categoriaInput],
             foto: foto,
         };
         console.log(productToSend);
 
-        const productPromise = axiosInstance.put('/producto/actualizar-producto', productToSend);
+        const productPromise = axiosInstance.patch('/producto/actualizar-producto', productToSend);
 
         toast.promise(productPromise, {
-            loading: 'Registrando producto...',
-            success: 'Producto registrado exitosamente',
-            error: (error) => error.response?.data?.error || "Error al registrar el producto",
+            loading: 'Actualizando producto...',
+            success: 'Producto actualizado exitosamente',
+            error: (error) => error.response?.data?.error || "Error al actualizar el producto",
         });
 
         try {
             const response = await productPromise;
+            if (response.status === 200) {
+                setActualizado(true);
+            }
         } catch (error) {
             console.error("Error al registrar el producto:", error);
         }
     };
+
+    const handleSubmitImagen = async (e) => {
+        e.preventDefault();
+
+        const productToSend = {
+            id_producto: parseInt(product_id),  // Asegúrate de incluir id_producto
+            nombre: producto.nombre,
+            foto: foto,
+        };
+
+        const productPromise = axiosInstance.patch('/producto/actualizar-foto-producto', productToSend);
+
+        toast.promise(productPromise, {
+            loading: 'Actualizando imagen...',
+            success: 'Imagen actualizada exitosamente',
+            error: (error) => error.response?.data?.error || "Error al actualizar la imagen",
+        });
+
+        try {
+            const response = await productPromise;
+            if (response.status === 200) {
+                setActualizado(true);
+            }
+        } catch (error) {
+            console.error("Error al actualizar la imagen:", error);
+        }
+    }
 
 
 
@@ -182,8 +215,57 @@ export default function DetallesProducto() {
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
-                    <Card className="p-3 flex justify-center items-center h-[500px] w-[500px]">
-                        <img src={producto.foto} alt={producto.nombre} className="h-[350px] w-[350px]" />
+                    <Card className="p-3 flex flex-col justify-center items-center h-[500px] w-[500px]">
+                        <CardContent>
+
+                            <img src={producto.foto} alt={producto.nombre} className="h-[350px] w-[350px]" />
+                        </CardContent>
+                        {user.rol == 1 &&
+
+                            <CardFooter>
+                                <Dialog>
+                                    <DialogTrigger asChild className="w-full">
+                                        <Button variant="outline">
+                                            <EditIcon className="h-5 w-5 mr-2" />
+                                            Editar Imagen
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Editar imagen</DialogTitle>
+                                            <DialogDescription>
+                                                Asegúrate de que eligas un archivo de tipo imagen.
+                                            </DialogDescription>
+                                            <form onSubmit={handleSubmitImagen}>
+                                                <div className="grid w-full gap-6 mt-4">
+                                                    <div className="flex flex-col items-start space-y-2">
+                                                        <Label htmlFor='foto'>Foto</Label>
+                                                        <Input
+                                                            name='foto'
+                                                            type="file"
+                                                            onChange={handleFileChange}
+                                                            accept="image/png, image/jpeg"
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <DialogFooter>
+                                                    <DialogClose asChild>
+                                                        <Button type="submit" className="font-semibold mt-4">Guardar Cambios</Button>
+                                                    </DialogClose>
+                                                </DialogFooter>
+                                            </form>
+                                        </DialogHeader>
+
+                                    </DialogContent>
+
+                                </Dialog>
+                            </CardFooter>
+
+
+                        }
+
+
                     </Card>
                 </div>
                 <Card className="mt-8">
@@ -300,13 +382,17 @@ export default function DetallesProducto() {
                         )}
                     </CardFooter>
                 </Card>
+                {user.rol == 0 && <InfoVendedor id_vendedor={producto.id_usuario} />}
 
 
             </div>
             {/* Agregar sección de comentarios */}
             <div className="mt-8 w-full ">
                 <p className="mb-4"><span className=" text-xl font-semibold">La calificacion promedio de este producto es:</span>  <CalificacionGeneral product_id={product_id} /></p>
+
                 {user.rol == 0 && <CommentSection entityId={product_id} userId={user?.id_usuario} />}
+
+
 
             </div>
         </div>

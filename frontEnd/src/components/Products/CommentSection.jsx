@@ -14,6 +14,7 @@ import { Button } from '../ui/button';
 
 const CommentSection = ({ entityId, userId }) => {
   const [comments, setComments] = useState([]);
+  const [commentsChange, setCommentsChange] = useState(false); // [1
   const [content, setContent] = useState('');
   const [userName, setUserName] = useState(''); // [1
   const { user } = useContext(UserContext);
@@ -32,7 +33,7 @@ const CommentSection = ({ entityId, userId }) => {
 
     fetchComments();
     console.log(comments);
-  }, [userName]);
+  }, [userName, commentsChange]);
 
   const handleCommentChange = (e) => {
     setContent(e.target.value)
@@ -51,6 +52,7 @@ const CommentSection = ({ entityId, userId }) => {
         const response = await axios.post('http://localhost:5000/comentario/crear-comentario', newComment);
         setComments([...comments, response.data]);
         setContent('');
+        setCommentsChange(!commentsChange); // [1
       } catch (error) {
         console.error('Error adding comment:', error);
       }
