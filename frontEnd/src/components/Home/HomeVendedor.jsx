@@ -91,8 +91,8 @@ export default function HomeVendendor() {
                     </Button>
                 </>
             ) : (
-                <div className="w-full">
-                    <Button className="mb-10 " onClick={handleUploadProduct}>Agregar Producto</Button>
+                <div className="w-full py-6">
+                    <Button className="mb-10" onClick={handleUploadProduct}>Agregar Producto</Button>
                     <Table className="mt-10 mb-10">
                         <TableCaption>Tus productos.</TableCaption>
                         <TableHeader>
