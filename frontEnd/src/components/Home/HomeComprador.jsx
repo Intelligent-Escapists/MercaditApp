@@ -10,6 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
 
 import { toast } from "sonner";
 import CalificacionGeneral from "../Products/CalificacionGeneral";
@@ -24,15 +25,36 @@ export default function HomeComprador() {
     const [productos, setProductos] = useState([]);
     const [categorias, setCategorias] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [buscar, setBuscar] = useState("");
+    const [productosFiltrados, setProductosFiltrados] = useState([]); // Aquí guardas los productos filtrados [productosFiltrados, setProductosFiltrados] = useState([
     const obtenerProductos = () => {
         axiosInstance.get('producto/productos')
             .then((res) => {
                 setProductos(res.data);
+                if (productosFiltrados.length === 0) {
+                    setProductosFiltrados(res.data);
+                }
             })
             .catch((err) => { toast(err) })
             .finally(() => setLoading(false));
     }
+   useEffect(() => {
+    if (productosFiltrados!==productos) {
+    const productosActualizados = productos.filter((producto) =>
+    producto.nombre.toLowerCase().includes(buscar.toLowerCase())
+  );
+  setProductosFiltrados(productosActualizados);}else{
+    const productosActualizados = productosFiltrados.filter((producto) =>
+    producto.nombre.toLowerCase().includes(buscar.toLowerCase())
+  );
+  setProductosFiltrados(productosActualizados);
+  }
+ 
+  console.log(productosFiltrados);
+  console.log(buscar);
+   }, [buscar]);
 
+   
     useEffect(() => {
         obtenerProductos();
         // Obtener las categorías desde la API
@@ -44,13 +66,8 @@ export default function HomeComprador() {
             .finally(() => setLoading(false));
     }, []);
 
-    if (productos.length === 0 || categorias.length === 0 || loading) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <p className="text-lg font-medium">Cargando Productos...</p>
-            </div>
-        );
-    }
+    
+
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('es-US', { style: 'currency', currency: 'USD' }).format(amount);
@@ -62,13 +79,13 @@ export default function HomeComprador() {
 
     const selectedcategory = (e) => {
         if (e === "Todas") {
-            obtenerProductos();
+            setProductosFiltrados(productos);
             return;
         }
         let categoria = encodeURIComponent(e);
         axiosInstance.get(`/producto/filtrar-producto/${categoria}`)
             .then((res) => {
-                setProductos(res.data);
+                setProductosFiltrados(res.data);
             })
             .catch((err) => {
                 toast.error("Error al cargar los productos"),
@@ -76,12 +93,18 @@ export default function HomeComprador() {
             })
             .finally(() => setLoading(false));
     }
+    const handleSearch=(e)=>{
+       setBuscar(e.target.value);
+    }
+
 
     return (
         <div className="flex justify-center items-center w-full py-10 flex-col">
+            
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-8">Bienvenido a MercaditApp</h1>
             <Select onValueChange={selectedcategory} >
                 <SelectTrigger className=" mb-8 text-base w-[300px]">
+
                     <SelectValue placeholder="Filtra por Categorias" />
                 </SelectTrigger>
                 <SelectContent>
@@ -96,9 +119,13 @@ export default function HomeComprador() {
                     ))}
                 </SelectContent>
             </Select>
+      <Input type="text" placeholder="Buscar productos" onChange={handleSearch} />
+      <Button type="submit">Buscar</Button>
+    </div>
+            
 
             <div className="grid grid-cols-3 gap-6">
-                {productos.map((producto) => (
+                {productosFiltrados.map((producto) => (
                     <Card key={producto.id_producto} className="h-92 w-96 hover:scale-105 hover:cursor-pointer" >
                         <CardHeader className="flex items-center">
                             <img src={producto.foto} alt={producto.nombre} className=" h-52 w-48 rounded-md" onClick={() => { handleClickCard(producto.id_producto) }} />
