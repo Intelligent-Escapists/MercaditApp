@@ -51,6 +51,7 @@ def consultar_producto_por_id(id_producto):
         jsonify(
             {
                 "id_producto": producto.id_producto,
+                "id_usuario": producto.id_usuario,
                 "nombre": producto.nombre,
                 "descripcion": producto.descripcion,
                 "foto": imagen_producto,
@@ -218,13 +219,12 @@ def obten_calificacion():
         return jsonify({"calificacion": "No existe calificacion"})
 
 
-@producto_blueprint.route("/actualizar-producto", methods=["PUT"])
+@producto_blueprint.route("/actualizar-producto", methods=["PATCH"])
 def actualiza_producto():
     data = request.json
     id_producto = request.json["id_producto"]
     nombre = request.json["nombre"]
     descripcion = request.json["descripcion"]
-    foto = request.json["foto"]
     no_stock = request.json["no_stock"]
     precio = request.json["precio"]
     categorias = request.json.get("categorias", [])
@@ -237,7 +237,6 @@ def actualiza_producto():
             id_producto=id_producto,
             nombre=nombre,
             descripcion=descripcion,
-            foto=foto,
             no_stock=no_stock,
             precio=precio,
             categorias=categorias,
@@ -259,6 +258,34 @@ def actualiza_producto():
     else:
         return jsonify({"error": "No existe el producto"}), 404
 
+@producto_blueprint.route("/actualizar-foto-producto", methods=["PATCH"])
+def actualiza_foto_producto():
+    id_producto = request.json["id_producto"]
+    foto = request.json["foto"]
+    nombre = request.json["nombre"]
+    if not id_producto or not foto:
+        return jsonify({"error": "Faltan datos requeridos"}), 400
+
+    if modelProducto.producto_existe(id_producto=id_producto):
+        producto_actualizado = modelProducto.actualizar_foto_producto(
+            id_producto=id_producto, foto=foto, nombre=nombre
+        )
+        categorias_actualizadas = modelCategoria.obtener_categorias_de_producto(
+            id_producto=id_producto
+        )
+
+        return jsonify(
+            {
+                "nombre": producto_actualizado.nombre,
+                "descripcion": producto_actualizado.descripcion,
+                "foto": producto_actualizado.foto,
+                "no_stock": producto_actualizado.no_stock,
+                "precio": producto_actualizado.precio,
+                "categoria": categorias_actualizadas
+            }
+        )
+    else:
+        return jsonify({"error": "No existe el producto"}), 404
 
 @producto_blueprint.route("/obtener-categorias-de-un-producto", methods=["GET"])
 def obten_categorias():

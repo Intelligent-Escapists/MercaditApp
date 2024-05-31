@@ -67,7 +67,13 @@ export default function HomeComprador() {
             .finally(() => setLoading(false));
     }, []);
 
-
+    if (productos.length === 0 || categorias.length === 0 || loading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p className="text-lg font-medium">Cargando Productos...</p>
+            </div>
+        );
+    }
 
 
     const formatCurrency = (amount) => {

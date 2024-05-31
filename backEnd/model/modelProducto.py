@@ -115,7 +115,7 @@ def existe_producto(id_usuario, nombre_producto):
 
 
 def actualizar_producto(
-    id_producto, nombre, descripcion, foto, no_stock, precio, categorias
+    id_producto, nombre, descripcion, no_stock, precio, categorias
 ):
     from app import app
 
@@ -123,18 +123,6 @@ def actualizar_producto(
     if producto:
         try:
             # Manejo de la imagen
-            if foto:
-                header, encoded = foto.split(",", 1)
-                file_data = base64.b64decode(encoded)
-                file_extension = header.split("/")[1].split(";")[0]
-                file_name = secure_filename(f"{nombre}.{file_extension}")
-                file_path = os.path.join(app.config["UPLOAD_FOLDER"], file_name)
-
-                with open(file_path, "wb") as file:
-                    file.write(file_data)
-
-                producto.foto = file_name
-
             producto.nombre = nombre
             producto.descripcion = descripcion
             producto.no_stock = no_stock
@@ -148,6 +136,26 @@ def actualizar_producto(
     else:
         return "no existe producto"
 
+def actualizar_foto_producto(id_producto, foto, nombre):
+    producto = producto_existe(id_producto=id_producto)
+
+    from app import app
+
+    header, encoded = foto.split(",", 1)
+    file_data = base64.b64decode(encoded)
+    file_extension = header.split("/")[1].split(";")[0]
+    file_name = secure_filename(f"{nombre}.{file_extension}")
+    file_path = os.path.join(app.config["UPLOAD_FOLDER"], file_name)
+    with open(file_path, "wb") as file:
+        file.write(file_data)
+
+    producto.foto = file_name
+    try:
+        db.session.commit()
+        return producto
+    except Exception as e:
+        print(f"Error: {e}")
+        abort(400, str(e))
 
 def actualizar_categorias(id_producto, categorias):
     producto = producto_existe(

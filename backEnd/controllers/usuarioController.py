@@ -32,6 +32,22 @@ def obtener_usuarios():
         ]
     )
 
+@usuario_blueprint.route("/obtener-usuario/<int:id_usuario>", methods=["GET"])
+def obtener_usuario(id_usuario):
+    usuario = modelUsuario.buscar_usuario_por_id(id_usuario)
+    if usuario is None:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+    return jsonify(
+        {
+            "id_usuario": usuario.id_usuario,
+            "nombre_usuario": usuario.nombre_usuario,
+            "correo": usuario.correo,
+            "password": usuario.password,
+            "telefono": usuario.telefono,
+            "email_confirmado": usuario.email_confirmado,
+            "rol": modelRol.rol_de_usuario(usuario.id_usuario),
+        }
+    )
 
 @usuario_blueprint.route("/verificar-correo/<token>", methods=["GET"])
 def confirmar_email(token):
