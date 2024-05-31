@@ -38,23 +38,24 @@ export default function HomeComprador() {
             .catch((err) => { toast(err) })
             .finally(() => setLoading(false));
     }
-   useEffect(() => {
-    if (productosFiltrados!==productos) {
-    const productosActualizados = productos.filter((producto) =>
-    producto.nombre.toLowerCase().includes(buscar.toLowerCase())
-  );
-  setProductosFiltrados(productosActualizados);}else{
-    const productosActualizados = productosFiltrados.filter((producto) =>
-    producto.nombre.toLowerCase().includes(buscar.toLowerCase())
-  );
-  setProductosFiltrados(productosActualizados);
-  }
- 
-  console.log(productosFiltrados);
-  console.log(buscar);
-   }, [buscar]);
+    useEffect(() => {
+        if (productosFiltrados !== productos) {
+            const productosActualizados = productos.filter((producto) =>
+                producto.nombre.toLowerCase().includes(buscar.toLowerCase())
+            );
+            setProductosFiltrados(productosActualizados);
+        } else {
+            const productosActualizados = productosFiltrados.filter((producto) =>
+                producto.nombre.toLowerCase().includes(buscar.toLowerCase())
+            );
+            setProductosFiltrados(productosActualizados);
+        }
 
-   
+        console.log(productosFiltrados);
+        console.log(buscar);
+    }, [buscar]);
+
+
     useEffect(() => {
         obtenerProductos();
         // Obtener las categorías desde la API
@@ -66,7 +67,7 @@ export default function HomeComprador() {
             .finally(() => setLoading(false));
     }, []);
 
-    
+
 
 
     const formatCurrency = (amount) => {
@@ -93,36 +94,35 @@ export default function HomeComprador() {
             })
             .finally(() => setLoading(false));
     }
-    const handleSearch=(e)=>{
-       setBuscar(e.target.value);
+    const handleSearch = (e) => {
+        setBuscar(e.target.value);
     }
 
 
     return (
-        <div className="flex justify-center items-center w-full py-10 flex-col">
-            
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-8">Bienvenido a MercaditApp</h1>
-            <Select onValueChange={selectedcategory} >
-                <SelectTrigger className=" mb-8 text-base w-[300px]">
+        <div className="flex flex-col py-12">
+            <div className="flex justify-center items-center w-full py-10 flex-col">
 
-                    <SelectValue placeholder="Filtra por Categorias" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="Todas" className="hover:cursor-pointer">
-                        Todas las categorías
-                    </SelectItem>
-                    {categorias.map((cat) => (
-                        <SelectItem key={cat} value={cat} className=" hover:cursor-pointer">
+                <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-8">Bienvenido a MercaditApp</h1>
+                <Select onValueChange={selectedcategory} >
+                    <SelectTrigger className=" mb-8 text-base w-[300px]">
 
-                            {cat}
+                        <SelectValue placeholder="Filtra por Categorias" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="Todas" className="hover:cursor-pointer">
+                            Todas las categorías
                         </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
-      <Input type="text" placeholder="Buscar productos" onChange={handleSearch} />
-      <Button type="submit">Buscar</Button>
-    </div>
-            
+                        {categorias.map((cat) => (
+                            <SelectItem key={cat} value={cat} className=" hover:cursor-pointer">
+
+                                {cat}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+
 
             <div className="grid grid-cols-3 gap-6">
                 {productosFiltrados.map((producto) => (
@@ -144,6 +144,6 @@ export default function HomeComprador() {
                     </Card>
                 ))}
             </div>
-        </div >
+        </div>
     );
 }

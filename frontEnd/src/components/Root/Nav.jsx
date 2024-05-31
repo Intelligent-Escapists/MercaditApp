@@ -87,7 +87,6 @@ export default function Nav() {
                     {user && loged && (
                         <BarraBusqueda />
                     )}
-                    </div>        
                     {user && loged ? (
                         <div className="flex gap-7">
                             {user.rol === 0 && (
