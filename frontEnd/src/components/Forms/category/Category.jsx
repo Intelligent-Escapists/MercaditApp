@@ -1,3 +1,6 @@
+import React, { useState, useEffect } from "react";
+import { axiosInstance } from "@/services/Axios/axiosClient";
+
 import {
     NavigationMenuItem,
 } from "@/components/ui/navigation-menu";
@@ -7,8 +10,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import React, { useState, useEffect } from "react";
-import { axiosInstance } from "@/services/Axios/axiosClient";
+
+import { Button } from "@/components/ui/button";
+import ChevronDownIcon from "@/components/Icons/ChevronDownIcon";
+
 
 const Category = () => {
     const [categories, setCategories] = useState([]);
@@ -34,7 +39,12 @@ const Category = () => {
     return (
         <NavigationMenuItem>
             <DropdownMenu>
-                <DropdownMenuTrigger className="text-xl hover:underline focus:outline-none text-white">Categorías</DropdownMenuTrigger>
+                <DropdownMenuTrigger className=" focus:outline-none text-white">
+                    <Button variant="ghost" size="sm" className="text-xl">
+                        Categorías
+                        <ChevronDownIcon className="h-5 w-5 " />
+                    </Button>
+                </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56 text-lg">
                     {categories.map(category => (
                         <DropdownMenuItem key={category} onClick={() => handleCategoryClick(category)}>

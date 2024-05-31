@@ -13,7 +13,8 @@ export function UserProvider({ children }) {
     useEffect(() => {
         axiosInstance.get('/usuario/@usuario')
             .then((res) => {
-                setUser(res.data);
+                const userWithPhoto = { ...res.data, foto: "https://dummyimage.com/460x460/000/fff.png&text=pf" };
+                setUser(userWithPhoto);
                 setLoged(true);
             })
             .catch((err) => {
@@ -25,7 +26,8 @@ export function UserProvider({ children }) {
         let errorMsg = 'Error desconocido, intenta de nuevo';
         try {
             const res = await axiosInstance.post('/usuario/login-usuario', usuario);
-            setUser(res.data);
+            const userWithPhoto = { ...res.data, foto: "https://dummyimage.com/460x460/000/fff.png&text=pf" };
+            setUser(userWithPhoto);
             setLoged(true);
             console.log(res.data);
             return res.data;
@@ -56,8 +58,19 @@ export function UserProvider({ children }) {
         setRegister(!register);
     }
 
+    const actualizarUsuario = async (usuarioActualizado) => {
+        try {
+            const res = await axiosInstance.patch('/usuario/actualizar-usuario', usuarioActualizado);
+            setUser(prevUser => ({ ...prevUser, ...usuarioActualizado }));
+            return res.data;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    };
+
     return (
-        <UserContext.Provider value={{ user, login, logout, register, toggleRegister, loged }}>
+        <UserContext.Provider value={{ user, login, logout, register, toggleRegister, loged, actualizarUsuario }}>
             {children}
         </UserContext.Provider>
     )

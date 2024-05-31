@@ -23,6 +23,18 @@ def crear_usuario(nombre_usuario, correo, password, telefono):
         abort(400, str(e))
     return nuevo_usuario
 
+def actualizar_usuario(nombre_usuario, correo, telefono):
+    usuario = Usuario.query.filter_by(correo=correo).first()
+    if usuario is None:
+        abort(404, "Usuario no encontrado")
+    usuario.nombre_usuario = nombre_usuario
+    usuario.telefono = telefono
+    usuario.correo = correo
+    try:
+        db.session.commit()
+    except Exception as e:
+        abort(400, str(e))
+    return usuario
 
 def confirmar_email(usuario):
     usuario.email_confirmado = True

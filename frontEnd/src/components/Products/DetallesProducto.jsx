@@ -161,9 +161,6 @@ export default function DetallesProducto() {
 
         try {
             const response = await productPromise;
-            if (response.status === 201) {
-
-            }
         } catch (error) {
             console.error("Error al registrar el producto:", error);
         }

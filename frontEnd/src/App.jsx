@@ -1,3 +1,4 @@
+import { UserProvider } from './providers/UserProvider';
 import { Toaster } from 'sonner'
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom"
 import Root from "./components/Root/Root";
@@ -11,7 +12,7 @@ import CorreoConfirmado from './components/RegisterPanel/CorreoConfirmado';
 import RegistrarProducto from './components/Forms/RegistrarProducto';
 import DetalleUsuario from './components/User/DetalleUsuario';
 import DetallesProducto from './components/Products/DetallesProducto';
-import { UserProvider } from './providers/UserProvider';
+import UserProfile from './components/UserProfile/UserProfile';
 
 //mario_front
 import Comment from './components/Products/Comment';
@@ -33,6 +34,7 @@ function App() {
         <Route path="detalle-usuario" element={< DetalleUsuario />} />
         <Route path="detalles-producto/:product_id" element={< DetallesProducto />} />
         <Route path="comentarios/:id" element={< Comment />} />
+        <Route path="perfil" element={< UserProfile />} />
       </Route>
     </>
   ));

@@ -15,8 +15,16 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+} from "@/components/ui/avatar"
+
 import { Button } from "../ui/button";
+import UserIcon from "../Icons/UserIcon";
 import CartIcon from "../Icons/CartIcon";
+
 
 export default function Nav() {
     const navigate = useNavigate();
@@ -50,8 +58,10 @@ export default function Nav() {
     };
 
     const handleClickUserDetail = () => {
-        navigate('/detalle-usuario');
+        navigate('/perfil');
     };
+
+    const getPrimerasDosLetrasUsuario = user ? user.correo.charAt(0).toUpperCase() + user.correo.charAt(2).toUpperCase : '';
 
     return (
         <header className="bg-indigo-900 py-5 pl-8 pr-8 h-[10%]">
@@ -88,7 +98,10 @@ export default function Nav() {
                             <NavigationMenuItem>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger className="text-xl focus:outline-none text-white">
-                                        <img src={"../../src/assets/user1.png"} alt="User Avatar" className="w-10 h-10 rounded-full" />
+                                        <Avatar className=" w-12 h-12">
+                                            <AvatarImage src={user.foto} alt="foto-de-perfil" />
+                                            <AvatarFallback>{getPrimerasDosLetrasUsuario}</AvatarFallback>
+                                        </Avatar>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className="w-36 text-lg">
                                         <DropdownMenuItem className="hover:cursor-pointer" onClick={handleClickUserDetail}>Perfil</DropdownMenuItem>
