@@ -55,7 +55,6 @@ import { isNumberValid } from "../Hooks/Validators/isNumberValid";
 import CartIcon from "../Icons/CartIcon";
 import Selector from "./Selector";
 import EditIcon from "../Icons/EditIcon";
-import TrashIcon from "../Icons/TrashIcon";
 
 export default function DetallesProducto() {
     const navigate = useNavigate();
@@ -166,170 +165,150 @@ export default function DetallesProducto() {
         }
     };
 
-    const handleDelete = async () => {
-        const deletePromise = axiosInstance.delete(`/producto/eliminar-producto/${product_id}`);
 
-        toast.promise(deletePromise, {
-            loading: 'Eliminando producto...',
-            success: 'Producto eliminado exitosamente',
-            error: 'Error al eliminar el producto',
-        });
-
-        try {
-            const response = await deletePromise;
-            if (response.status === 200) {
-                navigate(-1);
-            }
-        } catch (error) {
-            console.error("Error al eliminar el producto:", error);
-        }
-    };
 
     return (
-        <div className="flex justify-center items-center gap-9">
-            <div>
-                <Breadcrumb className="py-4">
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink className="text-lg" href="#" onClick={goBackHandler}>Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage className="text-lg">{producto.nombre}</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
-                <Card className="p-3 flex justify-center items-center h-[500px] w-[500px]">
-                    <img src={producto.foto} alt={producto.nombre} className="h-[350px] w-[350px]" />
-                </Card>
-            </div>
-            <Card className="mt-8">
-                <CardHeader className="flex gap-2 grid-cols-2">
-                    <CardTitle>{producto.nombre}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-4">
-                    <p>{producto.descripcion}</p>
+        <div className="flex flex-col items-center py-12">
+            <div className="flex justify-center items-center gap-9">
+                <div>
+                    <Breadcrumb className="py-4">
+                        <BreadcrumbList>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink className="text-lg" href="#" onClick={goBackHandler}>Home</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <BreadcrumbPage className="text-lg">{producto.nombre}</BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                    <Card className="p-3 flex justify-center items-center h-[500px] w-[500px]">
+                        <img src={producto.foto} alt={producto.nombre} className="h-[350px] w-[350px]" />
+                    </Card>
+                </div>
+                <Card className="mt-8">
+                    <CardHeader className="flex gap-2 grid-cols-2">
+                        <CardTitle>{producto.nombre}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-col gap-4">
+                        <p>{producto.descripcion}</p>
 
-                    <Separator />
-                    <p className="text-[3.2rem] font-semibold text-indigo-800">{formatCurrency(producto.precio)}</p>
-                    {user.rol === 0 ? (<>
-                        <Calificacion /> </>) : <Dialog><p></p></Dialog>}
+                        <Separator />
+                        <p className="text-[3.2rem] font-semibold text-indigo-800">{formatCurrency(producto.precio)}</p>
+                        {user.rol === 0 ? (<>
+                            <Calificacion /> </>) : <Dialog><p></p></Dialog>}
 
-                    <p >Stock: {producto.no_stock}</p>
-                </CardContent>
-                <CardFooter className="flex gap-8">
+                        <p >Stock: {producto.no_stock}</p>
+                    </CardContent>
+                    <CardFooter className="flex gap-8">
 
-                    {user.rol === 0 ? (
-                        <>
-                            <Selector />
-                            <Button className="font-semibold hover:scale-100 w-[500px]">
-                                <CartIcon className="h-5 w-5 mr-2" />
-                                <span className="text-base">Agregar al carrito</span>
-                            </Button>
-                        </>
-                    ) : (
-                        <Dialog>
-                            <DialogTrigger asChild className="w-full">
-                                <Button variant="outline">
-                                    <EditIcon className="h-5 w-5 mr-2" />
-                                    Editar
+                        {user.rol === 0 ? (
+                            <>
+                                <Selector />
+                                <Button className="font-semibold hover:scale-100 w-[500px]">
+                                    <CartIcon className="h-5 w-5 mr-2" />
+                                    <span className="text-base">Agregar al carrito</span>
                                 </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Editar producto</DialogTitle>
-                                    <DialogDescription>
-                                        Asegúrate de que los datos sean correctos antes de guardar los cambios.
-                                    </DialogDescription>
-                                    <form onSubmit={handleSubmit}>
-                                        <div className="grid w-full gap-6 mt-4">
-                                            <div className="flex flex-col items-start space-y-2">
-                                                <Label htmlFor='nombre'>Nombre</Label>
-                                                <Input
-                                                    name='nombre'
-                                                    type="text"
-                                                    placeholder="Ej. Camisa"
-                                                    value={nombreInput.value}
-                                                    onChange={nombreInput.onChange}
-                                                    required
-                                                />
+                            </>
+                        ) : (
+                            <Dialog>
+                                <DialogTrigger asChild className="w-full">
+                                    <Button variant="outline">
+                                        <EditIcon className="h-5 w-5 mr-2" />
+                                        Editar
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Editar producto</DialogTitle>
+                                        <DialogDescription>
+                                            Asegúrate de que los datos sean correctos antes de guardar los cambios.
+                                        </DialogDescription>
+                                        <form onSubmit={handleSubmit}>
+                                            <div className="grid w-full gap-6 mt-4">
+                                                <div className="flex flex-col items-start space-y-2">
+                                                    <Label htmlFor='nombre'>Nombre</Label>
+                                                    <Input
+                                                        name='nombre'
+                                                        type="text"
+                                                        placeholder="Ej. Camisa"
+                                                        value={nombreInput.value}
+                                                        onChange={nombreInput.onChange}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col items-start space-y-2">
+                                                    <Label htmlFor='descripcion'>Descripción</Label>
+                                                    <Textarea
+                                                        name='descripcion'
+                                                        placeholder="Ej. Camisa negra con estampado de Star Wars"
+                                                        value={descripcionInput.value}
+                                                        onChange={descripcionInput.onChange}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col items-start space-y-2">
+                                                    <Label htmlFor='stock'>Stock</Label>
+                                                    <Input
+                                                        name='cantidad'
+                                                        type="text"
+                                                        placeholder="5"
+                                                        value={cantidadInput.value}
+                                                        onChange={cantidadInput.onChange}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col items-start space-y-2">
+                                                    <Label htmlFor='precio'>Precio</Label>
+                                                    <Input
+                                                        name='precio'
+                                                        type="text"
+                                                        placeholder="5"
+                                                        value={precioInput.value}
+                                                        onChange={precioInput.onChange}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col items-start space-y-2">
+                                                    <Label htmlFor='categoria'>Categoría</Label>
+                                                    <Select onValueChange={handleCategoriaChange} value={categoriaInput}>
+                                                        <SelectTrigger className="w-full">
+                                                            <SelectValue placeholder="Selecciona una categoría" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {categorias.map((cat) => (
+                                                                <SelectItem key={cat} value={cat}>
+                                                                    {cat}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
                                             </div>
-                                            <div className="flex flex-col items-start space-y-2">
-                                                <Label htmlFor='descripcion'>Descripción</Label>
-                                                <Textarea
-                                                    name='descripcion'
-                                                    placeholder="Ej. Camisa negra con estampado de Star Wars"
-                                                    value={descripcionInput.value}
-                                                    onChange={descripcionInput.onChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="flex flex-col items-start space-y-2">
-                                                <Label htmlFor='stock'>Stock</Label>
-                                                <Input
-                                                    name='cantidad'
-                                                    type="text"
-                                                    placeholder="5"
-                                                    value={cantidadInput.value}
-                                                    onChange={cantidadInput.onChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="flex flex-col items-start space-y-2">
-                                                <Label htmlFor='precio'>Precio</Label>
-                                                <Input
-                                                    name='precio'
-                                                    type="text"
-                                                    placeholder="5"
-                                                    value={precioInput.value}
-                                                    onChange={precioInput.onChange}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="flex flex-col items-start space-y-2">
-                                                <Label htmlFor='categoria'>Categoría</Label>
-                                                <Select onValueChange={handleCategoriaChange} value={categoriaInput}>
-                                                    <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Selecciona una categoría" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {categorias.map((cat) => (
-                                                            <SelectItem key={cat} value={cat}>
-                                                                {cat}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                        </div>
-                                        <DialogFooter>
-                                            <DialogClose asChild>
-                                                <Button type="submit" className="font-semibold mt-4">Guardar Cambios</Button>
-                                            </DialogClose>
-                                        </DialogFooter>
-                                    </form>
-                                </DialogHeader>
+                                            <DialogFooter>
+                                                <DialogClose asChild>
+                                                    <Button type="submit" className="font-semibold mt-4">Guardar Cambios</Button>
+                                                </DialogClose>
+                                            </DialogFooter>
+                                        </form>
+                                    </DialogHeader>
 
-                            </DialogContent>
-                            <Button
-                                className="font-semibold bg-red-500 hover:bg-red-700"
-                                onClick={handleDelete}
-                            >
-                                <TrashIcon className="h-5 w-5 mr-3" />
-                                <span className="ml-1">Eliminar producto</span>
-                            </Button>
-                        </Dialog>
+                                </DialogContent>
 
-                    )}
-                </CardFooter>
-            </Card>
+                            </Dialog>
 
-            {/* Agregar sección de comentarios */}
-            <div className="mt-8 w-full max-w-xl">
-                <p className="text-sm">La calificacion promedio es: <CalificacionGeneral product_id={product_id} /></p>
-                <CommentSection entityId={product_id} userId={user?.id_usuario} />
+                        )}
+                    </CardFooter>
+                </Card>
+
+
             </div>
+            {/* Agregar sección de comentarios */}
+            <div className="mt-8 w-full ">
+                <p className="mb-4"><span className=" text-xl font-semibold">La calificacion promedio de este producto es:</span>  <CalificacionGeneral product_id={product_id} /></p>
+                {user.rol == 0 && <CommentSection entityId={product_id} userId={user?.id_usuario} />}
 
+            </div>
         </div>
     );
 }

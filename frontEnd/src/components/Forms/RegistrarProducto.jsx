@@ -115,7 +115,7 @@ export default function RegistrarProducto() {
     }
 
     return (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center py-12">
 
             <Card className='w-[450px] h-[730px]'>
                 <CardHeader>
@@ -152,6 +152,7 @@ export default function RegistrarProducto() {
                                     name='foto'
                                     type="file"
                                     onChange={handleFileChange}
+                                    accept="image/png, image/jpeg"
                                     required
                                 />
                             </div>
