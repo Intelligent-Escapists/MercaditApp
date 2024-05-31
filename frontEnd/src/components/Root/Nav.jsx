@@ -82,10 +82,7 @@ export default function Nav() {
                                 </NavigationMenuLink>
                             </div>
                         </NavigationMenuItem>
-                    </div>
-                    {user && loged && (
-                        <Category />
-                    )}
+                    </div>        
                     {user && loged ? (
                         <div className="flex gap-7">
                             {user.rol === 0 && (
