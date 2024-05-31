@@ -145,6 +145,7 @@ def get_usuario_autenticado():
     return jsonify(
         {
             "id_usuario": usuario.id_usuario,
+            "nombre_usuario": usuario.nombre_usuario,
             "correo": usuario.correo,
             "password": usuario.password,
             "telefono": usuario.telefono,
@@ -154,14 +155,29 @@ def get_usuario_autenticado():
     )
 
 
-@usuario_blueprint.route("/actualiza-usuario", methods=["POST"])
+@usuario_blueprint.route("/actualizar-usuario", methods=["PATCH"])
 def actualiza_usuario():
 
-    id_usuario = request.json["id_usuario"]
     nombre_usuario = request.json["nombre_usuario"]
     correo = request.json["correo"]
-    password = request.json["password"]
     telefono = request.json["telefono"]
+
+    usuarioAntiguo = modelUsuario.buscar_usuario_por_correo(correo)
+
+    if usuarioAntiguo.correo != correo:
+        if modelUsuario.existe_usuario_correo(correo):
+            return jsonify({"error": "El usuario con este correo ya existe"}), 409
+
+    if usuarioAntiguo.nombre_usuario != nombre_usuario:
+        if  modelUsuario.existe_usuario_nombre_usuario(nombre_usuario):
+            return jsonify({"error": "El nombre de usuario ya existe"}), 409
+    
+    usuario = modelUsuario.actualizar_usuario(nombre_usuario, correo, telefono)
+    return jsonify(
+        {
+            "success":"Usuario actualizado"
+        }
+    ),200
 
 
 def existeUsuario(id_usuario):
